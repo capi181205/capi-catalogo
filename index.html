@@ -5,36 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAPI Print Studio PRO | Catálogo Profesional</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Fuentes: Bebas Neue para títulos, Barlow para texto general -->
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Open Graph para WhatsApp/Facebook -->
+    <!-- ============================
+         OPEN GRAPH
+         Hace que al compartir el link en WhatsApp/Facebook aparezca
+         una vista previa con imagen, título y descripción.
+         Cambia og:image por la imagen principal de tu catálogo.
+    ============================= -->
     <meta property="og:title" content="CAPI Print Studio PRO">
-    <meta property="og:description" content="Playeras premium con estampado DTF en Poza Rica, Veracruz. Anti Social Club, Anime, Autos JDM y más.">
-    <meta property="og:image" content="img/assc-corridos-tumbados.webp">
+    <meta property="og:description" content="Playeras premium con estampado DTF en Poza Rica, Veracruz. Anime, JDM, Fútbol, Anti Social Club y personalizadas.">
+    <meta property="og:image" content="img/belicas/assc-corridos-tumbados.webp">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="es_MX">
+
+    <!-- Meta para Google -->
+    <meta name="description" content="Playeras premium con estampado DTF en Poza Rica, Veracruz. Entrega local y envíos a toda la república.">
+
+    <!-- Favicon: ícono que aparece en la pestaña del navegador -->
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
+    <!-- ============================
+         BANNER DE ENVÍOS
+         Barra informativa fija arriba del todo.
+         Genera confianza antes de que el cliente vea productos.
+    ============================= -->
+    <div class="banner-envios">
+        🚚 Entrega en Poza Rica el mismo día &nbsp;&middot;&nbsp;
+        📦 Envíos a toda la república &nbsp;&middot;&nbsp;
+        💳 Pago al recibir disponible
+    </div>
+
+    <!-- ============================
+         HEADER STICKY
+         Se queda fijo al hacer scroll.
+         Contiene: título, buscador, filtros y ordenar.
+    ============================= -->
     <header>
         <h1>CAPI PRINT STUDIO PRO</h1>
+
+        <!-- Buscador dinámico: filtra en tiempo real al escribir -->
         <div class="search-container">
             <input type="text" id="buscador" placeholder="Busca tu playera (Supra, Anime, Junior H)...">
         </div>
-        <nav>
-            <button class="activo" onclick="filtrar('todos', this)">Todos</button>
-            <button onclick="filtrar('jdm', this)">JDM / Autos</button>
-            <button onclick="filtrar('anime', this)">Anime</button>
-            <button onclick="filtrar('belica', this)">Bélicas</button>
-            <button onclick="filtrar('futbol', this)">Fútbol</button>
-            <button onclick="filtrar('personalizada', this)">Personalizada</button>
-        </nav>
+
+        <!-- Fila de controles: filtros de categoría + selector de orden -->
+        <div class="controles-catalogo">
+            <nav>
+                <!-- Llama a filtrar(categoria, botonActual) -->
+                <button class="activo" onclick="filtrar('todos', this)">Todos</button>
+                <button onclick="filtrar('jdm', this)">JDM / Autos</button>
+                <button onclick="filtrar('anime', this)">Anime</button>
+                <button onclick="filtrar('belica', this)">Bélicas</button>
+                <button onclick="filtrar('futbol', this)">Fútbol</button>
+                <button onclick="filtrar('personalizada', this)">Personalizada</button>
+            </nav>
+
+            <!-- Ordenar productos: llama a ordenarProductos() al cambiar -->
+            <select id="orden" onchange="ordenarProductos(this.value)">
+                <option value="default">Ordenar ↕</option>
+                <option value="precio-asc">Precio: menor a mayor</option>
+                <option value="precio-desc">Precio: mayor a menor</option>
+                <option value="nombre">A - Z</option>
+            </select>
+        </div>
     </header>
 
-    <main id="contenedor-productos"></main>
+    <!-- ============================
+         CATÁLOGO PRINCIPAL
+         Las tarjetas se inyectan aquí por mostrarProductos() en script.js.
+         Los skeleton-card son placeholders animados mientras carga.
+    ============================= -->
+    <main id="contenedor-productos">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+    </main>
 
-    <!-- Sección de confianza -->
+    <!-- ============================
+         SECCIÓN DE CONFIANZA
+         Cuatro puntos clave para convencer al cliente local.
+         Muy importante para ventas en Poza Rica.
+    ============================= -->
     <section class="seccion-confianza">
         <h2>¿Por qué comprar aquí?</h2>
         <div class="grid-confianza">
@@ -61,9 +117,31 @@
         </div>
     </section>
 
+    <!-- ============================
+         SECCIÓN DE PERSONALIZACIÓN
+         Formulario que arma un mensaje completo para WhatsApp.
+         Cliente escribe nombre, descripción del diseño y talla.
+    ============================= -->
+    <section class="seccion-personalizada">
+        <h2>¿Quieres una playera personalizada?</h2>
+        <p class="sub-personalizada">Cuéntanos tu idea y te hacemos un diseño único.</p>
+        <div class="form-personalizada">
+            <input type="text" id="custom-nombre" placeholder="Tu nombre">
+            <input type="text" id="custom-diseno" placeholder="Describe tu diseño (ej: logo de mi equipo, foto de mi perro...)">
+            <select id="custom-talla">
+                <option value="">Elige tu talla</option>
+                <option>S</option><option>M</option><option>L</option>
+                <option>XL</option><option>XXL</option>
+            </select>
+            <!-- Al hacer clic llama a pedirPersonalizada() en script.js -->
+            <button onclick="pedirPersonalizada()" class="btn-personalizada">Pedir por WhatsApp ✏️</button>
+        </div>
+    </section>
+
     <footer>
         <p>&copy; 2026 CAPI Print Studio PRO &mdash; Poza Rica, Veracruz</p>
-        <a href="https://wa.me/527821702426?text=Hola! Tengo una duda sobre sus playeras" target="_blank" class="footer-wa">Contáctanos por WhatsApp</a>
+        <a href="https://wa.me/527821702426?text=Hola!%20Tengo%20una%20duda%20sobre%20sus%20playeras"
+           target="_blank" class="footer-wa">Contáctanos por WhatsApp</a>
     </footer>
 
     <script src="js/script.js"></script>

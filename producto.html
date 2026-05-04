@@ -3,13 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- El título se actualiza por JS con el nombre del producto -->
     <title>Detalle de Producto | CAPI Print Studio PRO</title>
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <!-- Meta OG: se actualiza por JS para que cada producto tenga su propia preview -->
+    <meta property="og:type" content="product">
+    <meta name="og:site_name" content="CAPI Print Studio PRO">
 </head>
 <body class="pagina-detalle">
 
+    <!-- ============================
+         HEADER
+         Incluye botón de volver y título de la tienda.
+    ============================= -->
     <header>
         <div class="nav-retorno">
             <a href="index.html">← VOLVER AL CATÁLOGO</a>
@@ -17,24 +25,54 @@
         <h1>CAPI PRINT STUDIO PRO</h1>
     </header>
 
+    <!-- ============================
+         CONTENEDOR DE DETALLE
+         En móvil: columna (galería arriba, info abajo).
+         En PC: fila (galería izquierda, info derecha).
+    ============================= -->
     <main class="contenedor-detalle">
+
+        <!-- GALERÍA DE IMÁGENES -->
         <div class="galeria-producto">
+            <!-- Miniaturas clicables para navegar entre fotos -->
             <div class="miniaturas" id="galeria-thumbs"></div>
+
+            <!-- Visor principal con scroll horizontal tipo slider -->
             <div class="visor-principal">
                 <div class="slider-horizontal" id="slider-principal"></div>
             </div>
         </div>
 
+        <!-- INFORMACIÓN DEL PRODUCTO -->
         <div class="info-producto">
+            <!-- Nombre y precio (se llenan por JS) -->
             <h2 id="det-titulo"></h2>
-            <p class="det-precio" id="det-precio"></p>
+            <div class="precios-wrap">
+                <p class="det-precio-antes" id="det-precio-antes" style="display:none;"></p>
+                <p class="det-precio" id="det-precio"></p>
+            </div>
 
-            <!-- SELECTOR DE TALLA -->
+            <!-- Botón para copiar el link del producto al portapapeles -->
+            <button class="btn-copiar-link" onclick="copiarLink()" id="btn-copiar">
+                🔗 Copiar link de este producto
+            </button>
+
+            <!-- ============================
+                 SELECTOR DE TALLA
+                 Los botones se generan por JS según el array tallas[].
+                 Tallas agotadas aparecen tachadas y bloqueadas.
+                 El botón de WhatsApp no funciona hasta elegir talla.
+            ============================= -->
             <div class="seccion-tecnica" id="seccion-tallas">
                 <h3>Elige tu talla</h3>
                 <div class="tallas-grid" id="tallas-grid"></div>
+                <!-- Link a guía de tallas (modal) -->
+                <button class="link-guia-tallas" onclick="abrirGuiaTallas()">
+                    📏 Ver guía de tallas
+                </button>
             </div>
 
+            <!-- Datos técnicos del producto -->
             <div class="seccion-tecnica">
                 <h3>Composición</h3>
                 <p id="det-composicion"></p>
@@ -50,32 +88,106 @@
                 <p id="det-lavado"></p>
             </div>
 
-            <!-- Advertencia si no hay talla seleccionada -->
-            <p class="aviso-talla" id="aviso-talla" style="display:none;">⚠️ Por favor elige una talla antes de continuar.</p>
+            <!-- Aviso naranja si intenta pedir sin elegir talla -->
+            <p class="aviso-talla" id="aviso-talla" style="display:none;">
+                ⚠️ Por favor elige una talla antes de continuar.
+            </p>
 
-            <a href="#" id="link-whatsapp" class="btn-whatsapp-full" target="_blank">Pedir por WhatsApp</a>
+            <!-- Botón principal de compra -->
+            <a href="#" id="link-whatsapp" class="btn-whatsapp-full" target="_blank">
+                Pedir por WhatsApp
+            </a>
+
+            <!-- ============================
+                 PRODUCTOS RELACIONADOS
+                 Se muestran al final: misma categoría, distinto id.
+                 Evita que el cliente cierre la página sin comprar.
+            ============================= -->
+            <div class="seccion-tecnica" id="seccion-relacionados">
+                <h3>También te puede gustar</h3>
+                <div class="relacionados-grid" id="relacionados-grid"></div>
+            </div>
         </div>
     </main>
 
-    <script src="js/script.js"></script>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const idProducto = parseInt(params.get('id'));
-        const p = productos.find(item => item.id === idProducto);
+    <!-- ============================
+         MODAL DE GUÍA DE TALLAS
+         Se abre al dar clic en "Ver guía de tallas".
+         Muestra medidas en cm de cada talla.
+         Edita los valores de la tabla según tus playeras.
+    ============================= -->
+    <div class="modal-overlay" id="modal-tallas" onclick="cerrarGuiaTallas()">
+        <div class="modal-contenido" onclick="event.stopPropagation()">
+            <button class="modal-cerrar" onclick="cerrarGuiaTallas()">✕</button>
+            <h3>Guía de tallas</h3>
+            <p style="font-size:0.8rem;color:#666;margin-bottom:16px;">
+                Medidas en centímetros. Mide tu playera favorita para comparar.
+            </p>
+            <table class="tabla-tallas">
+                <thead>
+                    <tr>
+                        <th>Talla</th>
+                        <th>Pecho</th>
+                        <th>Largo</th>
+                        <th>Hombro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>S</td><td>96 cm</td><td>68 cm</td><td>42 cm</td></tr>
+                    <tr><td>M</td><td>102 cm</td><td>71 cm</td><td>44 cm</td></tr>
+                    <tr><td>L</td><td>108 cm</td><td>74 cm</td><td>46 cm</td></tr>
+                    <tr><td>XL</td><td>114 cm</td><td>77 cm</td><td>48 cm</td></tr>
+                    <tr><td>XXL</td><td>120 cm</td><td>80 cm</td><td>50 cm</td></tr>
+                </tbody>
+            </table>
+            <p style="font-size:0.75rem;color:#555;margin-top:12px;">
+                ¿Dudas con tu talla? Escríbenos por WhatsApp y te ayudamos.
+            </p>
+        </div>
+    </div>
 
+    <!-- script.js se carga primero para tener el array productos[] disponible -->
+    <script src="js/script.js"></script>
+
+    <script>
+        /* ============================================
+           LÓGICA DE LA PÁGINA DE DETALLE
+           Se ejecuta después de cargar script.js
+           para tener acceso al array productos[].
+        ============================================ */
+
+        /* Obtener el ID del producto desde la URL: producto.html?id=1 */
+        const params     = new URLSearchParams(window.location.search);
+        const idProducto = parseInt(params.get('id'));
+        const p          = productos.find(item => item.id === idProducto);
+
+        /* Talla elegida por el usuario (null = ninguna elegida aún) */
         let tallaSeleccionada = null;
 
+
+        /* =============================================
+           NAVEGAR ENTRE IMÁGENES DEL SLIDER
+           Desplaza el slider al índice de imagen indicado.
+           También resalta la miniatura activa.
+        ============================================== */
         function seleccionarImagen(indice) {
-            const slider = document.getElementById('slider-principal');
+            const slider   = document.getElementById('slider-principal');
             const anchoImg = slider.clientWidth;
             slider.scrollTo({ left: indice * anchoImg, behavior: 'smooth' });
 
-            // Resaltar miniatura activa
+            /* Resaltar miniatura activa quitando la clase a las demás */
             document.querySelectorAll('.miniaturas img').forEach((img, i) => {
                 img.classList.toggle('activa', i === indice);
             });
         }
 
+
+        /* =============================================
+           ELEGIR TALLA
+           Marca la talla elegida visualmente y la guarda.
+           Actualiza el link de WhatsApp con la talla.
+           Las tallas agotadas no hacen nada al clicar.
+        ============================================== */
         function elegirTalla(talla, disponible, btn) {
             if (!disponible) return;
             tallaSeleccionada = talla;
@@ -85,51 +197,142 @@
             actualizarLinkWA();
         }
 
+
+        /* =============================================
+           ACTUALIZAR LINK DE WHATSAPP
+           Arma el mensaje con nombre del producto y talla.
+           Si no hay talla: deja mensaje genérico.
+           Si hay talla: incluye la talla elegida.
+        ============================================== */
         function actualizarLinkWA() {
             const nombre = p ? p.nombre : '';
-            const talla = tallaSeleccionada || '';
-            const msg = talla
-                ? `Hola! Quiero comprar la ${nombre} en talla ${talla}`
+            const msg    = tallaSeleccionada
+                ? `Hola! Quiero comprar la ${nombre} en talla ${tallaSeleccionada}`
                 : `Hola! Quiero comprar la ${nombre}`;
             document.getElementById('link-whatsapp').href =
                 `https://wa.me/527821702426?text=${encodeURIComponent(msg)}`;
         }
 
-        if (p) {
-            document.title = `${p.nombre} | CAPI Print Studio PRO`;
-            document.getElementById('det-titulo').innerText = p.nombre;
-            document.getElementById('det-precio').innerText = p.precio;
-            document.getElementById('det-composicion').innerText = p.composicion;
-            document.getElementById('det-lavado').innerText = p.lavado;
 
+        /* =============================================
+           COPIAR LINK DEL PRODUCTO
+           Copia la URL actual al portapapeles.
+           Útil para compartir este producto por WhatsApp/Instagram.
+           Cambia el texto del botón por 2 segundos de confirmación.
+        ============================================== */
+        function copiarLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const btn = document.getElementById('btn-copiar');
+                btn.textContent = '✅ ¡Link copiado!';
+                setTimeout(() => { btn.textContent = '🔗 Copiar link de este producto'; }, 2000);
+            });
+        }
+
+
+        /* =============================================
+           MODAL GUÍA DE TALLAS
+           Abre y cierra el modal con la tabla de medidas.
+        ============================================== */
+        function abrirGuiaTallas() {
+            document.getElementById('modal-tallas').style.display = 'flex';
+        }
+        function cerrarGuiaTallas() {
+            document.getElementById('modal-tallas').style.display = 'none';
+        }
+        /* Cerrar con tecla Escape */
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') cerrarGuiaTallas();
+        });
+
+
+        /* =============================================
+           MOSTRAR PRODUCTOS RELACIONADOS
+           Busca productos de la misma categoría
+           (excluyendo el producto actual).
+           Muestra máximo 3 tarjetas pequeñas.
+        ============================================== */
+        function mostrarRelacionados(categoriaActual, idActual) {
+            const relacionados = productos
+                .filter(prod => prod.categoria === categoriaActual && prod.id !== idActual)
+                .slice(0, 3);
+
+            const grid = document.getElementById('relacionados-grid');
+
+            if (relacionados.length === 0) {
+                document.getElementById('seccion-relacionados').style.display = 'none';
+                return;
+            }
+
+            grid.innerHTML = relacionados.map(r => `
+                <div class="relacionado-card" onclick="window.location.href='producto.html?id=${r.id}'">
+                    <img src="${r.imagen}" alt="${r.nombre}" loading="lazy">
+                    <p class="relacionado-nombre">${r.nombre}</p>
+                    <p class="relacionado-precio">${r.precio}</p>
+                </div>
+            `).join('');
+        }
+
+
+        /* =============================================
+           INICIALIZACIÓN
+           Si el producto existe: llenar todos los campos.
+           Si no existe (ID inválido): redirigir al catálogo.
+        ============================================== */
+        if (p) {
+            /* Actualizar título de la pestaña y meta OG del producto */
+            document.title = `${p.nombre} | CAPI Print Studio PRO`;
+
+            /* Precio tachado si tiene precioAntes */
+            if (p.precioAntes) {
+                const elAntes = document.getElementById('det-precio-antes');
+                elAntes.textContent = p.precioAntes;
+                elAntes.style.display = 'block';
+            }
+
+            /* Rellenar campos de texto */
+            document.getElementById('det-titulo').innerText     = p.nombre;
+            document.getElementById('det-precio').innerText     = p.precio;
+            document.getElementById('det-composicion').innerText = p.composicion;
+            document.getElementById('det-lavado').innerText     = p.lavado;
             document.getElementById('det-caracteristicas').innerHTML =
                 p.caracteristicas.map(c => `<li>${c}</li>`).join('');
 
-            // Galería
+            /* Construir slider principal con todas las imágenes */
             const slider = document.getElementById('slider-principal');
-            slider.innerHTML = p.imagenes.map(img => `<img src="${img}" alt="${p.nombre}">`).join('');
+            slider.innerHTML = p.imagenes.map(img =>
+                `<img src="${img}" alt="${p.nombre}">`
+            ).join('');
 
+            /* Construir miniaturas clicables */
             const thumbs = document.getElementById('galeria-thumbs');
             thumbs.innerHTML = p.imagenes.map((img, i) => `
-                <img src="${img}" onclick="seleccionarImagen(${i})" alt="Miniatura ${i+1}" class="${i === 0 ? 'activa' : ''}">
+                <img src="${img}"
+                     onclick="seleccionarImagen(${i})"
+                     alt="Vista ${i + 1}"
+                     class="${i === 0 ? 'activa' : ''}">
             `).join('');
 
-            // Tallas
+            /* Construir botones de talla */
             if (p.tallas && p.tallas.length > 0) {
                 const grid = document.getElementById('tallas-grid');
                 grid.innerHTML = p.tallas.map(t => {
-                    const disponible = p.tallasDisponibles ? p.tallasDisponibles.includes(t) : true;
-                    return `<button 
-                        class="btn-talla ${!disponible ? 'agotada' : ''}" 
-                        onclick="elegirTalla('${t}', ${disponible}, this)"
-                        ${!disponible ? 'title="Agotada"' : ''}
-                    >${t}${!disponible ? '<span class="talla-x">✕</span>' : ''}</button>`;
+                    const disponible = p.tallasDisponibles
+                        ? p.tallasDisponibles.includes(t)
+                        : true;
+                    return `
+                        <button class="btn-talla ${!disponible ? 'agotada' : ''}"
+                            onclick="elegirTalla('${t}', ${disponible}, this)"
+                            ${!disponible ? 'title="Agotada" disabled' : ''}>
+                            ${t}
+                            ${!disponible ? '<span class="talla-x">✕</span>' : ''}
+                        </button>`;
                 }).join('');
             } else {
+                /* Ocultar sección de tallas si el producto no las tiene */
                 document.getElementById('seccion-tallas').style.display = 'none';
             }
 
-            // Bloquear WhatsApp si hay tallas y no se eligió
+            /* Interceptar clic en WhatsApp: pedir talla si no eligió */
             document.getElementById('link-whatsapp').addEventListener('click', (e) => {
                 if (p.tallas && p.tallas.length > 0 && !tallaSeleccionada) {
                     e.preventDefault();
@@ -138,9 +341,14 @@
                 }
             });
 
+            /* Inicializar link de WhatsApp */
             actualizarLinkWA();
 
+            /* Mostrar productos relacionados */
+            mostrarRelacionados(p.categoria, p.id);
+
         } else {
+            /* Producto no encontrado → volver al catálogo */
             window.location.href = 'index.html';
         }
     </script>
