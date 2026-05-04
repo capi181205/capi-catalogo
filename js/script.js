@@ -2,20 +2,21 @@
 const productos = [
     {
         id: 1,
-        nombre: "Playera Toyota Supra MK4",
+        nombre: "Playera ASSC Corridos Tumbados",
         categoria: "jdm",
         precio: "$280",
-        imagen: "img/supra.webp",
-        stock: 5
+        imagen: "assc-corridos-tumbados",
+        stock: 20
     },
     {
         id: 2,
-        nombre: "Playera Akaza Demon Slayer",
+        nombre: "Playera ASSC Angeles",
         categoria: "anime",
         precio: "$280",
-        imagen: "img/akaza.webp",
-        stock: 3
+        imagen: "assc-Sadboyz Angeles",
+        stock: 69
     }
+    
 ];
 
 const contenedor = document.getElementById('contenedor-productos');
@@ -32,7 +33,7 @@ function mostrarProductos(lista) {
             <h3>${p.nombre}</h3>
             <p class="precio">${p.precio}</p>
             <p>Disponibles: ${p.stock}</p>
-            <a href="https://wa.me/TUNUMERO" class="btn-whatsapp">Pedir por WhatsApp</a>
+            <a href="https://wa.me/527821702426" class="btn-whatsapp">Pedir por WhatsApp</a>
         `;
         contenedor.appendChild(card);
     });
