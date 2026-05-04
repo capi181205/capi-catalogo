@@ -5,29 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAPI Print Studio PRO | Catálogo Profesional</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Open Graph para WhatsApp/Facebook -->
+    <meta property="og:title" content="CAPI Print Studio PRO">
+    <meta property="og:description" content="Playeras premium con estampado DTF en Poza Rica, Veracruz. Anti Social Club, Anime, Autos JDM y más.">
+    <meta property="og:image" content="img/assc-corridos-tumbados.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_MX">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
     <header>
         <h1>CAPI PRINT STUDIO PRO</h1>
-        <!-- Barra de búsqueda dinámica -->
         <div class="search-container">
             <input type="text" id="buscador" placeholder="Busca tu playera (Supra, Anime, Junior H)...">
         </div>
-        <!-- Filtros de categoría -->
         <nav>
-            <button onclick="filtrar('todos')">Todos</button>
-            <button onclick="filtrar('jdm')">JDM / Autos</button>
-            <button onclick="filtrar('anime')">Anime</button>
-            <button onclick="filtrar('belica')">Bélicas</button>
+            <button class="activo" onclick="filtrar('todos', this)">Todos</button>
+            <button onclick="filtrar('jdm', this)">JDM / Autos</button>
+            <button onclick="filtrar('anime', this)">Anime</button>
+            <button onclick="filtrar('belica', this)">Bélicas</button>
+            <button onclick="filtrar('futbol', this)">Fútbol</button>
+            <button onclick="filtrar('personalizada', this)">Personalizada</button>
         </nav>
     </header>
 
-    <!-- Contenedor donde se inyectan las tarjetas -->
     <main id="contenedor-productos"></main>
 
+    <!-- Sección de confianza -->
+    <section class="seccion-confianza">
+        <h2>¿Por qué comprar aquí?</h2>
+        <div class="grid-confianza">
+            <div class="item-confianza">
+                <span class="icono-confianza">👕</span>
+                <h3>Estampado DTF</h3>
+                <p>Alta resolución, colores que no se despegan ni con lavados frecuentes.</p>
+            </div>
+            <div class="item-confianza">
+                <span class="icono-confianza">📍</span>
+                <h3>Poza Rica, Ver.</h3>
+                <p>Entrega local en Poza Rica y zona norte de Veracruz. También enviamos.</p>
+            </div>
+            <div class="item-confianza">
+                <span class="icono-confianza">💬</span>
+                <h3>Pago al recibir</h3>
+                <p>Contra entrega disponible en la zona. Sin riesgo para ti.</p>
+            </div>
+            <div class="item-confianza">
+                <span class="icono-confianza">✏️</span>
+                <h3>Personalizadas</h3>
+                <p>Trae tu diseño o cuéntanos tu idea y lo hacemos realidad.</p>
+            </div>
+        </div>
+    </section>
+
     <footer>
-        <p>&copy; 2026 CAPI Print Studio PRO - Poza Rica, Veracruz</p>
+        <p>&copy; 2026 CAPI Print Studio PRO &mdash; Poza Rica, Veracruz</p>
+        <a href="https://wa.me/527821702426?text=Hola! Tengo una duda sobre sus playeras" target="_blank" class="footer-wa">Contáctanos por WhatsApp</a>
     </footer>
 
     <script src="js/script.js"></script>

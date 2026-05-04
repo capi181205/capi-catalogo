@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Producto | CAPI Print Studio PRO</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 </head>
 <body class="pagina-detalle">
 
@@ -26,7 +28,13 @@
         <div class="info-producto">
             <h2 id="det-titulo"></h2>
             <p class="det-precio" id="det-precio"></p>
-            
+
+            <!-- SELECTOR DE TALLA -->
+            <div class="seccion-tecnica" id="seccion-tallas">
+                <h3>Elige tu talla</h3>
+                <div class="tallas-grid" id="tallas-grid"></div>
+            </div>
+
             <div class="seccion-tecnica">
                 <h3>Composición</h3>
                 <p id="det-composicion"></p>
@@ -42,6 +50,9 @@
                 <p id="det-lavado"></p>
             </div>
 
+            <!-- Advertencia si no hay talla seleccionada -->
+            <p class="aviso-talla" id="aviso-talla" style="display:none;">⚠️ Por favor elige una talla antes de continuar.</p>
+
             <a href="#" id="link-whatsapp" class="btn-whatsapp-full" target="_blank">Pedir por WhatsApp</a>
         </div>
     </main>
@@ -52,34 +63,83 @@
         const idProducto = parseInt(params.get('id'));
         const p = productos.find(item => item.id === idProducto);
 
-        // Función para mover el slider
+        let tallaSeleccionada = null;
+
         function seleccionarImagen(indice) {
             const slider = document.getElementById('slider-principal');
-            const anchoImg = slider.clientWidth; 
-            slider.scrollTo({
-                left: indice * anchoImg,
-                behavior: 'smooth'
+            const anchoImg = slider.clientWidth;
+            slider.scrollTo({ left: indice * anchoImg, behavior: 'smooth' });
+
+            // Resaltar miniatura activa
+            document.querySelectorAll('.miniaturas img').forEach((img, i) => {
+                img.classList.toggle('activa', i === indice);
             });
         }
 
+        function elegirTalla(talla, disponible, btn) {
+            if (!disponible) return;
+            tallaSeleccionada = talla;
+            document.querySelectorAll('.btn-talla').forEach(b => b.classList.remove('seleccionada'));
+            btn.classList.add('seleccionada');
+            document.getElementById('aviso-talla').style.display = 'none';
+            actualizarLinkWA();
+        }
+
+        function actualizarLinkWA() {
+            const nombre = p ? p.nombre : '';
+            const talla = tallaSeleccionada || '';
+            const msg = talla
+                ? `Hola! Quiero comprar la ${nombre} en talla ${talla}`
+                : `Hola! Quiero comprar la ${nombre}`;
+            document.getElementById('link-whatsapp').href =
+                `https://wa.me/527821702426?text=${encodeURIComponent(msg)}`;
+        }
+
         if (p) {
+            document.title = `${p.nombre} | CAPI Print Studio PRO`;
             document.getElementById('det-titulo').innerText = p.nombre;
             document.getElementById('det-precio').innerText = p.precio;
             document.getElementById('det-composicion').innerText = p.composicion;
             document.getElementById('det-lavado').innerText = p.lavado;
-            
-            document.getElementById('det-caracteristicas').innerHTML = 
+
+            document.getElementById('det-caracteristicas').innerHTML =
                 p.caracteristicas.map(c => `<li>${c}</li>`).join('');
 
+            // Galería
             const slider = document.getElementById('slider-principal');
-            slider.innerHTML = p.imagenes.map(img => `<img src="${img}" alt="Vista">`).join('');
+            slider.innerHTML = p.imagenes.map(img => `<img src="${img}" alt="${p.nombre}">`).join('');
 
             const thumbs = document.getElementById('galeria-thumbs');
             thumbs.innerHTML = p.imagenes.map((img, i) => `
-                <img src="${img}" onclick="seleccionarImagen(${i})" alt="Miniatura">
+                <img src="${img}" onclick="seleccionarImagen(${i})" alt="Miniatura ${i+1}" class="${i === 0 ? 'activa' : ''}">
             `).join('');
 
-            document.getElementById('link-whatsapp').href = `https://wa.me/527821702426?text=Hola! Quiero comprar la ${p.nombre}`;
+            // Tallas
+            if (p.tallas && p.tallas.length > 0) {
+                const grid = document.getElementById('tallas-grid');
+                grid.innerHTML = p.tallas.map(t => {
+                    const disponible = p.tallasDisponibles ? p.tallasDisponibles.includes(t) : true;
+                    return `<button 
+                        class="btn-talla ${!disponible ? 'agotada' : ''}" 
+                        onclick="elegirTalla('${t}', ${disponible}, this)"
+                        ${!disponible ? 'title="Agotada"' : ''}
+                    >${t}${!disponible ? '<span class="talla-x">✕</span>' : ''}</button>`;
+                }).join('');
+            } else {
+                document.getElementById('seccion-tallas').style.display = 'none';
+            }
+
+            // Bloquear WhatsApp si hay tallas y no se eligió
+            document.getElementById('link-whatsapp').addEventListener('click', (e) => {
+                if (p.tallas && p.tallas.length > 0 && !tallaSeleccionada) {
+                    e.preventDefault();
+                    document.getElementById('aviso-talla').style.display = 'block';
+                    document.getElementById('tallas-grid').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            actualizarLinkWA();
+
         } else {
             window.location.href = 'index.html';
         }

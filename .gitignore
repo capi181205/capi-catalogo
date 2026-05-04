@@ -1,0 +1,6 @@
+.vs/
+.vscode/
+*.db
+*.sqlite
+*.db-shm
+*.db-wal

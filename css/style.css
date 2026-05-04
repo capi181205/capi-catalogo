@@ -4,28 +4,29 @@
 body {
     background-color: #0f0f0f;
     color: white;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Barlow', 'Segoe UI', sans-serif;
     margin: 0;
     text-align: center;
 }
 
 header {
-    padding: 15px 10px; /* Reducido para evitar cortes en móvil */
+    padding: 15px 10px;
     background: #000;
-    border-bottom: 2px solid #333;
+    border-bottom: 2px solid #222;
     position: sticky;
     top: 0;
     z-index: 100;
 }
 
-header h1 { 
-    letter-spacing: 2px; 
-    font-weight: 800; 
-    margin: 10px 0;
-    font-size: 1.4rem; /* Tamaño optimizado para móvil */
+header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 4px;
+    font-weight: 400;
+    margin: 8px 0 12px;
+    font-size: 1.8rem;
+    color: #fff;
 }
 
-/* Enlace "Volver" en producto.html */
 .nav-retorno {
     text-align: left;
     padding: 5px;
@@ -33,40 +34,50 @@ header h1 {
 }
 
 .nav-retorno a {
-    color: #00ff00;
+    color: #00ff88;
     text-decoration: none;
-    font-weight: bold;
-    font-size: 0.8rem; /* Letra un poco más pequeña en móvil */
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
 }
+.nav-retorno a:hover { opacity: 0.7; }
 
 /* =========================================
-   2. BUSCADOR Y BOTONES
+   2. BUSCADOR Y BOTONES DE FILTRO
    ========================================= */
 #buscador {
-    padding: 12px;
+    padding: 12px 18px;
     width: 90%;
     max-width: 500px;
     border-radius: 25px;
-    border: 1px solid #444;
+    border: 1px solid #333;
     background: #1a1a1a;
     color: white;
-    margin-bottom: 15px;
+    margin-bottom: 14px;
     outline: none;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
 }
+#buscador:focus { border-color: #00ff88; }
 
 nav button {
     background: #111;
-    border: 1px solid #444;
-    color: #888;
-    padding: 8px 12px;
+    border: 1px solid #333;
+    color: #777;
+    padding: 8px 14px;
     cursor: pointer;
-    margin: 2px;
+    margin: 3px;
     border-radius: 20px;
-    transition: 0.3s;
+    transition: all 0.2s;
     font-size: 0.75rem;
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.03em;
 }
-
-nav button:hover { background: white; color: black; border-color: white; }
+nav button:hover { background: #222; color: #fff; border-color: #555; }
+nav button.activo { background: #00ff88; color: #000; border-color: #00ff88; font-weight: 600; }
 
 /* =========================================
    3. REJILLA DEL CATÁLOGO
@@ -74,41 +85,203 @@ nav button:hover { background: white; color: black; border-color: white; }
 #contenedor-productos {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 10px;
+    gap: 12px;
+    padding: 14px;
 }
 
 .producto-card {
-    background: #161616;
+    background: #141414;
     padding: 10px;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1px solid #222;
     cursor: pointer;
+    text-align: left;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.producto-card:hover {
+    transform: translateY(-4px);
+    border-color: #333;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.5);
 }
 
-.producto-card img { width: 100%; border-radius: 8px; }
-.producto-card h3 { font-size: 0.8rem; margin: 8px 0; color: #eee; }
-.precio { color: #00ff00; font-weight: bold; font-size: 1rem; }
+.card-imagen-wrap {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.producto-card img {
+    width: 100%;
+    display: block;
+    border-radius: 10px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.producto-card:hover img { transform: scale(1.04); }
+
+.producto-card h3 {
+    font-size: 0.78rem;
+    margin: 10px 0 4px;
+    color: #ddd;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.precio {
+    color: #00ff88;
+    font-weight: 700;
+    font-size: 1.05rem;
+    margin: 0 0 4px;
+}
+
+.stock-label {
+    font-size: 0.72rem;
+    color: #555;
+    margin: 0 0 10px;
+}
+
+/* Badge de urgencia */
+.badge-urgente {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #ff3c3c;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    z-index: 2;
+    letter-spacing: 0.04em;
+}
+
+/* Botón WhatsApp en tarjeta */
+.btn-whatsapp {
+    display: block;
+    background: #25d366;
+    color: #fff;
+    text-align: center;
+    padding: 9px 6px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    transition: background 0.2s;
+}
+.btn-whatsapp:hover { background: #1db954; }
+
+/* Sin resultados */
+.sin-resultados {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px 20px;
+    color: #555;
+}
+.sin-resultados p { font-size: 1rem; margin-bottom: 16px; }
+.btn-whatsapp-inline {
+    display: inline-block;
+    background: #25d366;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
 
 /* =========================================
-   4. PÁGINA DE PRODUCTO (producto.html)
+   4. SECCIÓN DE CONFIANZA
+   ========================================= */
+.seccion-confianza {
+    padding: 40px 20px;
+    border-top: 1px solid #1c1c1c;
+    margin-top: 20px;
+}
+.seccion-confianza h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+    color: #fff;
+    margin-bottom: 24px;
+    font-weight: 400;
+}
+.grid-confianza {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+}
+.item-confianza {
+    background: #141414;
+    border: 1px solid #1e1e1e;
+    border-radius: 12px;
+    padding: 16px;
+}
+.icono-confianza {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 8px;
+}
+.item-confianza h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #00ff88;
+    margin: 0 0 6px;
+    letter-spacing: 0.03em;
+}
+.item-confianza p {
+    font-size: 0.75rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* =========================================
+   5. FOOTER
+   ========================================= */
+footer {
+    padding: 30px 20px;
+    border-top: 1px solid #1c1c1c;
+    color: #444;
+    font-size: 0.8rem;
+}
+footer p { margin: 0 0 12px; }
+.footer-wa {
+    display: inline-block;
+    border: 1px solid #25d366;
+    color: #25d366;
+    padding: 9px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+}
+.footer-wa:hover { background: #25d366; color: #000; }
+
+/* =========================================
+   6. PÁGINA DE DETALLE (producto.html)
    ========================================= */
 .contenedor-detalle {
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    padding: 16px;
     gap: 20px;
     max-width: 1200px;
     margin: auto;
     text-align: left;
 }
 
-.galeria-producto { display: flex; flex-direction: column-reverse; gap: 15px; }
+.galeria-producto { display: flex; flex-direction: column-reverse; gap: 12px; }
 
 .visor-principal {
     width: 100%;
     overflow: hidden;
-    border-radius: 15px;
+    border-radius: 16px;
     background: #111;
 }
 
@@ -118,7 +291,6 @@ nav button:hover { background: white; color: black; border-color: white; }
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
 }
-
 .slider-horizontal::-webkit-scrollbar { display: none; }
 
 .slider-horizontal img {
@@ -126,50 +298,184 @@ nav button:hover { background: white; color: black; border-color: white; }
     flex-shrink: 0;
     scroll-snap-align: start;
     object-fit: contain;
+    max-height: 420px;
 }
 
-.miniaturas { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; }
-
-.miniaturas img { 
-    width: 70px; 
-    height: 70px; 
+.miniaturas { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; }
+.miniaturas img {
+    width: 68px;
+    height: 68px;
     flex-shrink: 0;
-    border-radius: 8px; 
-    cursor: pointer; 
-    border: 2px solid #333; 
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid #2a2a2a;
     object-fit: cover;
+    transition: border-color 0.2s;
+}
+.miniaturas img:hover,
+.miniaturas img.activa { border-color: #00ff88; }
+
+/* Info del producto */
+.info-producto h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 2px;
+    margin: 0 0 6px;
+    font-weight: 400;
+    color: #fff;
 }
 
+.det-precio {
+    color: #00ff88;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 20px;
+}
+
+.seccion-tecnica {
+    border-top: 1px solid #1e1e1e;
+    padding-top: 14px;
+    margin-top: 14px;
+}
+.seccion-tecnica h3 {
+    font-size: 0.75rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 10px;
+    font-weight: 600;
+}
+.seccion-tecnica p,
+.seccion-tecnica li {
+    color: #bbb;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin: 0;
+}
+.seccion-tecnica ul { padding-left: 18px; margin: 0; }
+.seccion-tecnica li { margin-bottom: 4px; }
+
+/* Selector de tallas */
+.tallas-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+.btn-talla {
+    position: relative;
+    background: #161616;
+    border: 1.5px solid #2a2a2a;
+    color: #bbb;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-talla:hover:not(.agotada) {
+    border-color: #00ff88;
+    color: #00ff88;
+}
+.btn-talla.seleccionada {
+    background: #00ff88;
+    border-color: #00ff88;
+    color: #000;
+}
+.btn-talla.agotada {
+    opacity: 0.3;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+.talla-x {
+    position: absolute;
+    font-size: 0.55rem;
+    top: 4px;
+    right: 4px;
+    color: #ff4444;
+    display: none;
+}
+.btn-talla.agotada .talla-x { display: block; }
+
+/* Aviso sin talla */
+.aviso-talla {
+    color: #ff9900;
+    font-size: 0.82rem;
+    margin: 10px 0 0;
+    padding: 10px 14px;
+    background: #1a1200;
+    border-radius: 8px;
+    border: 1px solid #3a2800;
+}
+
+/* Botón WhatsApp full */
 .btn-whatsapp-full {
     display: block;
     background: #25d366;
     color: white;
     text-align: center;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 16px;
+    border-radius: 12px;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 1rem;
     margin-top: 20px;
+    letter-spacing: 0.04em;
+    transition: background 0.2s, transform 0.1s;
 }
+.btn-whatsapp-full:hover { background: #1db954; transform: scale(1.01); }
+.btn-whatsapp-full:active { transform: scale(0.98); }
 
 /* =========================================
-   5. AJUSTES PARA PC
+   7. AJUSTES PARA PC (≥ 1024px)
    ========================================= */
 @media (min-width: 1024px) {
-    header h1 { font-size: 2.2rem; }
-    .nav-retorno a { font-size: 1rem; }
-    
-    #contenedor-productos { grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 40px; }
-    
-    .contenedor-detalle { flex-direction: row; padding: 50px; align-items: flex-start; }
-    .galeria-producto { flex-direction: row; width: 60%; }
-    
-    .miniaturas { 
-        flex-direction: column; 
-        width: 100px; 
-        height: 500px;
+    header h1 { font-size: 2.8rem; }
+    .nav-retorno a { font-size: 0.9rem; }
+
+    #contenedor-productos {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        padding: 40px;
     }
-    
-    .visor-principal { width: 500px; height: 500px; }
-    .info-producto { width: 40%; padding-left: 30px; }
+
+    .producto-card h3 { font-size: 0.88rem; }
+
+    .grid-confianza { grid-template-columns: repeat(4, 1fr); }
+
+    .contenedor-detalle {
+        flex-direction: row;
+        padding: 50px;
+        align-items: flex-start;
+    }
+
+    .galeria-producto {
+        flex-direction: row;
+        width: 58%;
+    }
+
+    .miniaturas {
+        flex-direction: column;
+        width: 90px;
+        height: 520px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .miniaturas img { width: 80px; height: 80px; }
+
+    .visor-principal { width: 460px; height: 520px; }
+    .slider-horizontal img { max-height: 520px; }
+
+    .info-producto {
+        width: 42%;
+        padding-left: 40px;
+    }
+
+    .info-producto h2 { font-size: 2rem; }
 }
