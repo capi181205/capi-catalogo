@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAPI Print Studio PRO | Catálogo</title>
-    <!-- Enlazamos el diseño -->
+    <title>CAPI Print Studio PRO | Catálogo Profesional</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,7 +11,7 @@
     <header>
         <h1>CAPI PRINT STUDIO PRO</h1>
         <div class="search-container">
-            <input type="text" id="buscador" placeholder="Busca tu playera (Supra, Anime, Gym)...">
+            <input type="text" id="buscador" placeholder="Busca tu playera (Supra, Anime, Junior H)...">
         </div>
         <nav>
             <button onclick="filtrar('todos')">Todos</button>
@@ -23,14 +22,44 @@
     </header>
 
     <main id="contenedor-productos">
-        <!-- Aquí aparecerán las playeras automáticamente gracias a JS -->
-    </main>
+        </main>
+
+    <div id="modal-producto" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="cerrarModal()">&times;</span>
+            
+            <div class="modal-grid">
+                <div class="modal-galeria" id="modal-galeria"></div>
+
+                <div class="modal-info">
+                    <h2 id="modal-titulo"></h2>
+                    <p class="modal-precio" id="modal-precio"></p>
+                    
+                    <div class="detalle-seccion">
+                        <h3>Composición</h3>
+                        <p id="modal-composicion"></p>
+                    </div>
+
+                    <div class="detalle-seccion">
+                        <h3>Características</h3>
+                        <ul id="modal-caracteristicas"></ul>
+                    </div>
+
+                    <div class="detalle-seccion">
+                        <h3>Instrucciones de Lavado</h3>
+                        <p id="modal-lavado"></p>
+                    </div>
+
+                    <a href="#" id="btn-comprar-modal" class="btn-whatsapp" target="_blank">Pedir por WhatsApp</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 CAPI Print Studio PRO - Poza Rica, Veracruz</p>
     </footer>
 
-    <!-- Enlazamos la lógica -->
     <script src="js/script.js"></script>
 </body>
 </html>
