@@ -13,7 +13,7 @@ const productos = [
         nombre: "Playera ASSC",
         categoria: "anime",
         precio: "$280",
-        imagen: "img/akaza.webp",
+        imagen: "img/assc-Sadboyz Angeles.webp",
         stock: 3
     }
 ];
