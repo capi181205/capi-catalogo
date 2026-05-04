@@ -5,18 +5,17 @@ const productos = [
         nombre: "Playera ASSC Corridos Tumbados",
         categoria: "jdm",
         precio: "$280",
-        imagen: "assc-corridos-tumbados",
-        stock: 20
+        imagen: "img/assc-corridos-tumbados.webp",
+        stock: 5
     },
     {
         id: 2,
-        nombre: "Playera ASSC Angeles",
+        nombre: "Playera ASSC",
         categoria: "anime",
         precio: "$280",
-        imagen: "assc-Sadboyz Angeles",
-        stock: 69
+        imagen: "img/akaza.webp",
+        stock: 3
     }
-    
 ];
 
 const contenedor = document.getElementById('contenedor-productos');
