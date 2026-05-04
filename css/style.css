@@ -1,14 +1,16 @@
-/* 1. ESTILOS BASE */
+/* =========================================
+   1. CONFIGURACIÓN GENERAL Y HEADER
+   ========================================= */
 body {
     background-color: #0f0f0f;
     color: white;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
     text-align: center;
 }
 
 header {
-    padding: 20px;
+    padding: 15px 10px; /* Reducido para evitar cortes en móvil */
     background: #000;
     border-bottom: 2px solid #333;
     position: sticky;
@@ -16,12 +18,33 @@ header {
     z-index: 100;
 }
 
-h1 { letter-spacing: 2px; font-weight: 800; margin-bottom: 15px; }
+header h1 { 
+    letter-spacing: 2px; 
+    font-weight: 800; 
+    margin: 10px 0;
+    font-size: 1.4rem; /* Tamaño optimizado para móvil */
+}
 
-/* 2. BUSCADOR Y BOTONES */
+/* Enlace "Volver" en producto.html */
+.nav-retorno {
+    text-align: left;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.nav-retorno a {
+    color: #00ff00;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.8rem; /* Letra un poco más pequeña en móvil */
+}
+
+/* =========================================
+   2. BUSCADOR Y BOTONES
+   ========================================= */
 #buscador {
     padding: 12px;
-    width: 85%;
+    width: 90%;
     max-width: 500px;
     border-radius: 25px;
     border: 1px solid #444;
@@ -35,99 +58,118 @@ nav button {
     background: #111;
     border: 1px solid #444;
     color: #888;
-    padding: 8px 16px;
+    padding: 8px 12px;
     cursor: pointer;
-    margin: 4px;
+    margin: 2px;
     border-radius: 20px;
     transition: 0.3s;
+    font-size: 0.75rem;
 }
 
 nav button:hover { background: white; color: black; border-color: white; }
 
-/* 3. GRID DE PRODUCTOS (2 COLUMNAS EN MÓVIL) */
+/* =========================================
+   3. REJILLA DEL CATÁLOGO
+   ========================================= */
 #contenedor-productos {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 15px;
+    gap: 10px;
+    padding: 10px;
 }
 
 .producto-card {
     background: #161616;
-    padding: 12px;
+    padding: 10px;
     border-radius: 12px;
     border: 1px solid #222;
     cursor: pointer;
-    transition: transform 0.3s;
 }
 
 .producto-card img { width: 100%; border-radius: 8px; }
-.producto-card h3 { font-size: 0.85rem; margin: 10px 0 5px; color: #eee; }
-.precio { color: #00ff00; font-weight: bold; font-size: 1.1rem; margin: 5px 0; }
+.producto-card h3 { font-size: 0.8rem; margin: 8px 0; color: #eee; }
+.precio { color: #00ff00; font-weight: bold; font-size: 1rem; }
 
-.btn-whatsapp {
-    display: block;
-    background: #25d366;
-    color: white;
-    text-decoration: none;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: bold;
-}
-
-/* 4. ESTILOS DEL MODAL (DETALLE) */
-.modal {
-    display: none; 
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.9);
-    overflow-y: auto; /* Permite scroll si la info es mucha */
-}
-
-.modal-content {
-    background-color: #111;
-    margin: 5% auto;
-    padding: 25px;
-    width: 85%;
-    max-width: 900px;
-    border-radius: 20px;
-    position: relative;
-    border: 1px solid #333;
-}
-
-.close-modal {
-    position: absolute;
-    right: 20px; top: 10px;
-    font-size: 40px;
-    cursor: pointer;
-    color: #555;
-}
-
-.modal-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+/* =========================================
+   4. PÁGINA DE PRODUCTO (producto.html)
+   ========================================= */
+.contenedor-detalle {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
     gap: 20px;
+    max-width: 1200px;
+    margin: auto;
     text-align: left;
 }
 
-.modal-galeria img { width: 100%; border-radius: 10px; margin-bottom: 10px; }
+.galeria-producto { display: flex; flex-direction: column-reverse; gap: 15px; }
 
-.detalle-seccion h3 {
-    color: #00ff00;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    margin-top: 15px;
-    letter-spacing: 1px;
+.visor-principal {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 15px;
+    background: #111;
 }
 
-.detalle-seccion p, .detalle-seccion li { font-size: 0.9rem; color: #aaa; line-height: 1.4; }
+.slider-horizontal {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
 
-/* 5. AJUSTE PARA PC (4 COLUMNAS) */
+.slider-horizontal::-webkit-scrollbar { display: none; }
+
+.slider-horizontal img {
+    width: 100%;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    object-fit: contain;
+}
+
+.miniaturas { display: flex; gap: 10px; overflow-x: auto; padding: 5px 0; }
+
+.miniaturas img { 
+    width: 70px; 
+    height: 70px; 
+    flex-shrink: 0;
+    border-radius: 8px; 
+    cursor: pointer; 
+    border: 2px solid #333; 
+    object-fit: cover;
+}
+
+.btn-whatsapp-full {
+    display: block;
+    background: #25d366;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* =========================================
+   5. AJUSTES PARA PC
+   ========================================= */
 @media (min-width: 1024px) {
+    header h1 { font-size: 2.2rem; }
+    .nav-retorno a { font-size: 1rem; }
+    
     #contenedor-productos { grid-template-columns: repeat(4, 1fr); gap: 25px; padding: 40px; }
-    .modal-grid { grid-template-columns: 1fr 1fr; } /* Detalle en 2 columnas */
-    .producto-card:hover { transform: scale(1.03); border-color: #555; }
+    
+    .contenedor-detalle { flex-direction: row; padding: 50px; align-items: flex-start; }
+    .galeria-producto { flex-direction: row; width: 60%; }
+    
+    .miniaturas { 
+        flex-direction: column; 
+        width: 100px; 
+        height: 500px;
+    }
+    
+    .visor-principal { width: 500px; height: 500px; }
+    .info-producto { width: 40%; padding-left: 30px; }
 }

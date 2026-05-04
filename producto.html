@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Producto | CAPI Print Studio PRO</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="pagina-detalle">
+
+    <header>
+        <div class="nav-retorno">
+            <a href="index.html">← VOLVER AL CATÁLOGO</a>
+        </div>
+        <h1>CAPI PRINT STUDIO PRO</h1>
+    </header>
+
+    <main class="contenedor-detalle">
+        <div class="galeria-producto">
+            <div class="miniaturas" id="galeria-thumbs"></div>
+            <div class="visor-principal">
+                <div class="slider-horizontal" id="slider-principal"></div>
+            </div>
+        </div>
+
+        <div class="info-producto">
+            <h2 id="det-titulo"></h2>
+            <p class="det-precio" id="det-precio"></p>
+            
+            <div class="seccion-tecnica">
+                <h3>Composición</h3>
+                <p id="det-composicion"></p>
+            </div>
+
+            <div class="seccion-tecnica">
+                <h3>Características</h3>
+                <ul id="det-caracteristicas"></ul>
+            </div>
+
+            <div class="seccion-tecnica">
+                <h3>Instrucciones de Lavado</h3>
+                <p id="det-lavado"></p>
+            </div>
+
+            <a href="#" id="link-whatsapp" class="btn-whatsapp-full" target="_blank">Pedir por WhatsApp</a>
+        </div>
+    </main>
+
+    <script src="js/script.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const idProducto = parseInt(params.get('id'));
+        const p = productos.find(item => item.id === idProducto);
+
+        // Función para mover el slider
+        function seleccionarImagen(indice) {
+            const slider = document.getElementById('slider-principal');
+            const anchoImg = slider.clientWidth; 
+            slider.scrollTo({
+                left: indice * anchoImg,
+                behavior: 'smooth'
+            });
+        }
+
+        if (p) {
+            document.getElementById('det-titulo').innerText = p.nombre;
+            document.getElementById('det-precio').innerText = p.precio;
+            document.getElementById('det-composicion').innerText = p.composicion;
+            document.getElementById('det-lavado').innerText = p.lavado;
+            
+            document.getElementById('det-caracteristicas').innerHTML = 
+                p.caracteristicas.map(c => `<li>${c}</li>`).join('');
+
+            const slider = document.getElementById('slider-principal');
+            slider.innerHTML = p.imagenes.map(img => `<img src="${img}" alt="Vista">`).join('');
+
+            const thumbs = document.getElementById('galeria-thumbs');
+            thumbs.innerHTML = p.imagenes.map((img, i) => `
+                <img src="${img}" onclick="seleccionarImagen(${i})" alt="Miniatura">
+            `).join('');
+
+            document.getElementById('link-whatsapp').href = `https://wa.me/527821702426?text=Hola! Quiero comprar la ${p.nombre}`;
+        } else {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
