@@ -1,4 +1,6 @@
-/* Configuración General */
+/* =========================================
+   1. CONFIGURACIÓN GENERAL
+   ========================================= */
 body {
     background-color: #0f0f0f; /* Fondo oscuro tipo Youngla */
     color: white;
@@ -11,62 +13,128 @@ header {
     padding: 20px;
     background: #000;
     border-bottom: 2px solid #333;
+    position: sticky; /* Se queda fijo al bajar */
+    top: 0;
+    z-index: 100;
 }
 
-h1 { letter-spacing: 3px; font-weight: bold; }
+h1 { 
+    letter-spacing: 3px; 
+    font-weight: bold; 
+    margin-bottom: 15px;
+}
 
-/* Buscador y Botones */
+/* =========================================
+   2. BUSCADOR Y NAVEGACIÓN
+   ========================================= */
 #buscador {
-    padding: 10px;
-    width: 60%;
-    border-radius: 5px;
-    border: none;
+    padding: 12px;
+    width: 85%; /* Más ancho en móvil */
+    max-width: 600px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #1a1a1a;
+    color: white;
     margin-bottom: 20px;
+}
+
+nav {
+    margin-bottom: 10px;
 }
 
 nav button {
     background: none;
     border: 1px solid #555;
     color: white;
-    padding: 10px 20px;
+    padding: 8px 15px;
     cursor: pointer;
-    margin: 5px;
+    margin: 3px;
+    border-radius: 5px;
     transition: 0.3s;
+    font-size: 0.85rem;
 }
 
-nav button:hover { background: white; color: black; }
+nav button:hover { 
+    background: white; 
+    color: black; 
+}
 
-/* Cuadrícula de Productos (Grid como Farfetch) */
+/* =========================================
+   3. CUADRÍCULA DE PRODUCTOS (MÓVIL - 2 COL)
+   ========================================= */
 #contenedor-productos {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 40px;
+    grid-template-columns: repeat(2, 1fr); /* FUERZA 2 COLUMNAS EN CELULAR */
+    gap: 12px;
+    padding: 15px;
 }
 
 /* Tarjeta de Playera */
 .producto-card {
     background: #1a1a1a;
-    padding: 15px;
+    padding: 10px;
     border-radius: 10px;
-    transition: transform 0.3s;
+    border: 1px solid #222;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
-
-.producto-card:hover { transform: translateY(-10px); }
 
 .producto-card img {
     width: 100%;
     border-radius: 5px;
+    margin-bottom: 10px;
 }
 
-.precio { color: #00ff00; font-weight: bold; font-size: 1.2rem; }
+.producto-card h3 {
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+.precio { 
+    color: #00ff00; 
+    font-weight: bold; 
+    font-size: 1.1rem; 
+    margin: 5px 0;
+}
 
 .btn-whatsapp {
     display: block;
     background: #25d366;
     color: white;
     text-decoration: none;
-    padding: 10px;
+    padding: 8px;
     margin-top: 10px;
     border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* =========================================
+   4. AJUSTE PARA PC (PANTALLAS GRANDES - 4 COL)
+   ========================================= */
+@media (min-width: 1024px) {
+    #contenedor-productos {
+        grid-template-columns: repeat(4, 1fr); /* 4 COLUMNAS EN PC */
+        gap: 30px;
+        padding: 40px;
+    }
+
+    .producto-card {
+        padding: 20px;
+    }
+
+    .producto-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .btn-whatsapp {
+        font-size: 1rem;
+        padding: 12px;
+    }
+
+    .producto-card:hover { 
+        transform: translateY(-10px); 
+        border-color: #444;
+    }
 }
