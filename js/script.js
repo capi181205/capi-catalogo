@@ -8,7 +8,7 @@ const productos = [
         categoria: "belica",
         precio: "$280",
         imagen: "img/assc-corridos-tumbados.webp", // Imagen principal del catálogo
-        imagenes: ["img/assc-corridos-tumbados.webp"], // Puedes agregar más fotos aquí para la galería
+        imagenes: ["img/assc-corridos-tumbados.webp", "img/assc-corridos-tumbados-2.webp", "img/assc-corridos-tumbados-3.webp"], // Puedes agregar más fotos aquí para la galería
         composicion: "100% Algodón Premium",
         caracteristicas: ["Corte Oversize", "Estampado DTF alta resolución", "Cuello redondo reforzado"],
         lavado: "Lavar a mano con agua fría. No usar secadora. Planchar al revés.",
