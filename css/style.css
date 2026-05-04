@@ -1,0 +1,72 @@
+/* Configuración General */
+body {
+    background-color: #0f0f0f; /* Fondo oscuro tipo Youngla */
+    color: white;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+    background: #000;
+    border-bottom: 2px solid #333;
+}
+
+h1 { letter-spacing: 3px; font-weight: bold; }
+
+/* Buscador y Botones */
+#buscador {
+    padding: 10px;
+    width: 60%;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 20px;
+}
+
+nav button {
+    background: none;
+    border: 1px solid #555;
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 5px;
+    transition: 0.3s;
+}
+
+nav button:hover { background: white; color: black; }
+
+/* Cuadrícula de Productos (Grid como Farfetch) */
+#contenedor-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 40px;
+}
+
+/* Tarjeta de Playera */
+.producto-card {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.producto-card:hover { transform: translateY(-10px); }
+
+.producto-card img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.precio { color: #00ff00; font-weight: bold; font-size: 1.2rem; }
+
+.btn-whatsapp {
+    display: block;
+    background: #25d366;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
