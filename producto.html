@@ -3,92 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- El título se actualiza por JS con el nombre del producto -->
     <title>Detalle de Producto | CAPI Print Studio PRO</title>
+
+    <!--
+        ✅ RUTA CORRECTA: css/style.css
+        La estructura del proyecto es:
+          /index.html
+          /producto.html
+          /css/style.css
+          /js/script.js
+          /img/...
+    -->
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-    <!-- Meta OG: se actualiza por JS para que cada producto tenga su propia preview -->
-    <meta property="og:type" content="product">
-    <meta name="og:site_name" content="CAPI Print Studio PRO">
+
+    <!-- Meta OG base — se sobreescriben por JS -->
+    <meta property="og:type"        content="product">
+    <meta property="og:site_name"   content="CAPI Print Studio PRO">
+    <meta property="og:title"       content="CAPI Print Studio PRO">
+    <meta property="og:description" content="Playeras premium con estampado DTF en Poza Rica, Veracruz.">
+    <meta property="og:image"       content="">
 </head>
 <body class="pagina-detalle">
 
-    <!-- ============================
-         HEADER
-         Incluye botón de volver y título de la tienda.
-    ============================= -->
+    <!-- HEADER -->
     <header>
-        <div class="nav-retorno">
-            <a href="index.html">← VOLVER AL CATÁLOGO</a>
+        <div class="header-top">
+            <div class="nav-retorno">
+                <a href="index.html">← VOLVER AL CATÁLOGO</a>
+            </div>
+            <h1>CAPI PRINT STUDIO PRO</h1>
         </div>
-        <h1>CAPI PRINT STUDIO PRO</h1>
     </header>
 
-    <!-- ============================
-         CONTENEDOR DE DETALLE
-         En móvil: columna (galería arriba, info abajo).
-         En PC: fila (galería izquierda, info derecha).
-    ============================= -->
+    <!-- CONTENEDOR DE DETALLE -->
     <main class="contenedor-detalle">
 
-        <!-- GALERÍA DE IMÁGENES -->
+        <!-- GALERÍA -->
         <div class="galeria-producto">
-            <!-- Miniaturas clicables para navegar entre fotos -->
             <div class="miniaturas" id="galeria-thumbs"></div>
-
-            <!-- Visor principal con scroll horizontal tipo slider -->
             <div class="visor-principal">
                 <div class="slider-horizontal" id="slider-principal"></div>
             </div>
         </div>
 
-        <!-- INFORMACIÓN DEL PRODUCTO -->
+        <!-- INFORMACIÓN -->
         <div class="info-producto">
-            <!-- Nombre y precio (se llenan por JS) -->
             <h2 id="det-titulo"></h2>
             <div class="precios-wrap">
                 <p class="det-precio-antes" id="det-precio-antes" style="display:none;"></p>
                 <p class="det-precio" id="det-precio"></p>
             </div>
 
-            <!-- Botón para copiar el link del producto al portapapeles -->
             <button class="btn-copiar-link" onclick="copiarLink()" id="btn-copiar">
                 🔗 Copiar link de este producto
             </button>
 
-            <!-- ============================
-                 SELECTOR DE TALLA
-                 Los botones se generan por JS según el array tallas[].
-                 Tallas agotadas aparecen tachadas y bloqueadas.
-                 El botón de WhatsApp no funciona hasta elegir talla.
-            ============================= -->
+            <!-- SELECTOR DE TALLA -->
             <div class="seccion-tecnica" id="seccion-tallas">
                 <h3>Elige tu talla</h3>
                 <div class="tallas-grid" id="tallas-grid"></div>
-                <!-- Link a guía de tallas (modal) -->
                 <button class="link-guia-tallas" onclick="abrirGuiaTallas()">
                     📏 Ver guía de tallas
                 </button>
             </div>
 
-            <!-- Datos técnicos del producto -->
-            <div class="seccion-tecnica">
-                <h3>Composición</h3>
-                <p id="det-composicion"></p>
+            <!-- SELECTOR DE CANTIDAD -->
+            <div class="selector-cantidad" id="selector-cantidad">
+                <label>Cantidad</label>
+                <div class="cantidad-ctrl">
+                    <button onclick="cambiarCantidadDet(-1)">−</button>
+                    <span id="cantidad-val">1</span>
+                    <button onclick="cambiarCantidadDet(1)">+</button>
+                </div>
             </div>
 
+            <!-- TABS: Descripción / Lavado / Envío -->
             <div class="seccion-tecnica">
-                <h3>Características</h3>
-                <ul id="det-caracteristicas"></ul>
+                <div class="tabs-nav">
+                    <button class="tab-btn activa" onclick="activarTab('desc', this)">Descripción</button>
+                    <button class="tab-btn"        onclick="activarTab('lavado', this)">Lavado</button>
+                    <button class="tab-btn"        onclick="activarTab('envio', this)">Envío</button>
+                </div>
+
+                <div class="tab-panel activo" id="tab-desc">
+                    <p id="det-composicion"></p>
+                    <ul id="det-caracteristicas" style="margin-top:8px;"></ul>
+                </div>
+
+                <div class="tab-panel" id="tab-lavado">
+                    <p id="det-lavado"></p>
+                </div>
+
+                <div class="tab-panel" id="tab-envio">
+                    <ul>
+                        <li>🏠 Entrega local en Poza Rica el mismo día (pedidos antes de las 6 PM)</li>
+                        <li>📦 Envíos a toda la república en 2–4 días hábiles</li>
+                        <li>💳 Pago al recibir disponible en zona local</li>
+                        <li>💸 Transferencia SPEI o depósito para envíos foráneos</li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="seccion-tecnica">
-                <h3>Instrucciones de Lavado</h3>
-                <p id="det-lavado"></p>
-            </div>
-
-            <!-- Aviso naranja si intenta pedir sin elegir talla -->
+            <!-- Aviso sin talla -->
             <p class="aviso-talla" id="aviso-talla" style="display:none;">
                 ⚠️ Por favor elige una talla antes de continuar.
             </p>
@@ -98,11 +116,7 @@
                 Pedir por WhatsApp
             </a>
 
-            <!-- ============================
-                 PRODUCTOS RELACIONADOS
-                 Se muestran al final: misma categoría, distinto id.
-                 Evita que el cliente cierre la página sin comprar.
-            ============================= -->
+            <!-- Productos relacionados -->
             <div class="seccion-tecnica" id="seccion-relacionados">
                 <h3>También te puede gustar</h3>
                 <div class="relacionados-grid" id="relacionados-grid"></div>
@@ -110,12 +124,7 @@
         </div>
     </main>
 
-    <!-- ============================
-         MODAL DE GUÍA DE TALLAS
-         Se abre al dar clic en "Ver guía de tallas".
-         Muestra medidas en cm de cada talla.
-         Edita los valores de la tabla según tus playeras.
-    ============================= -->
+    <!-- MODAL GUÍA DE TALLAS -->
     <div class="modal-overlay" id="modal-tallas" onclick="cerrarGuiaTallas()">
         <div class="modal-contenido" onclick="event.stopPropagation()">
             <button class="modal-cerrar" onclick="cerrarGuiaTallas()">✕</button>
@@ -125,12 +134,7 @@
             </p>
             <table class="tabla-tallas">
                 <thead>
-                    <tr>
-                        <th>Talla</th>
-                        <th>Pecho</th>
-                        <th>Largo</th>
-                        <th>Hombro</th>
-                    </tr>
+                    <tr><th>Talla</th><th>Pecho</th><th>Largo</th><th>Hombro</th></tr>
                 </thead>
                 <tbody>
                     <tr><td>S</td><td>96 cm</td><td>68 cm</td><td>42 cm</td></tr>
@@ -146,48 +150,65 @@
         </div>
     </div>
 
-    <!-- script.js se carga primero para tener el array productos[] disponible -->
+    <!-- BOTÓN FLOTANTE WHATSAPP -->
+    <a href="#" target="_blank" class="whatsapp-flotante" id="wa-flotante" title="Chatea por WhatsApp">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 0C7.163 0 0 7.163 0 16c0 2.82.736 5.46 2.027 7.754L0 32l8.478-2.02A15.938 15.938 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm8.28 22.27c-.347.976-1.72 1.787-2.824 2.023-.752.16-1.733.287-5.036-1.082-4.223-1.737-6.944-6.027-7.155-6.308-.202-.28-1.7-2.261-1.7-4.31 0-2.048 1.063-3.052 1.44-3.46.347-.367.757-.46 1.01-.46.252 0 .505.002.726.013.233.012.546-.088.854.65.32.76 1.09 2.626 1.186 2.817.097.19.162.413.032.664-.13.252-.194.41-.384.631-.19.222-.4.495-.572.665-.19.19-.388.397-.167.778.222.38.986 1.622 2.116 2.628 1.454 1.296 2.68 1.697 3.06 1.888.38.19.603.16.824-.096.222-.255.951-1.109 1.205-1.49.253-.38.505-.317.854-.19.35.127 2.222 1.048 2.603 1.238.38.19.633.285.726.443.093.16.093.924-.253 1.9z"/>
+        </svg>
+    </a>
+
+    <!--
+        ✅ ORDEN DE CARGA CORRECTO:
+        1. script.js  → define productos[] y todas las funciones globales
+        2. <script>   → usa productos[] que ya existe en memoria
+    -->
     <script src="js/script.js"></script>
 
     <script>
-        /* ============================================
-           LÓGICA DE LA PÁGINA DE DETALLE
-           Se ejecuta después de cargar script.js
-           para tener acceso al array productos[].
-        ============================================ */
+        /* ============================================================
+           LÓGICA EXCLUSIVA DE PRODUCTO.HTML
+           Este bloque corre DESPUÉS de que script.js terminó de
+           parsearse, por lo que productos[] ya existe sin problema.
+        ============================================================ */
 
-        /* Obtener el ID del producto desde la URL: producto.html?id=1 */
+        /* Leer el ID del producto desde la URL: producto.html?id=1 */
         const params     = new URLSearchParams(window.location.search);
         const idProducto = parseInt(params.get('id'));
         const p          = productos.find(item => item.id === idProducto);
 
-        /* Talla elegida por el usuario (null = ninguna elegida aún) */
+        /* Estado local de esta página */
         let tallaSeleccionada = null;
+        let cantidadDet       = 1;
 
 
-        /* =============================================
-           NAVEGAR ENTRE IMÁGENES DEL SLIDER
-           Desplaza el slider al índice de imagen indicado.
-           También resalta la miniatura activa.
-        ============================================== */
+        /* ── Tabs ──────────────────────────────── */
+        function activarTab(nombre, btn) {
+            document.querySelectorAll('.tab-panel').forEach(t => t.classList.remove('activo'));
+            document.querySelectorAll('.tab-btn').forEach(b  => b.classList.remove('activa'));
+            document.getElementById(`tab-${nombre}`).classList.add('activo');
+            btn.classList.add('activa');
+        }
+
+
+        /* ── Selector de cantidad ───────────────── */
+        function cambiarCantidadDet(delta) {
+            cantidadDet = Math.max(1, Math.min(10, cantidadDet + delta));
+            document.getElementById('cantidad-val').textContent = cantidadDet;
+            actualizarLinkWA();
+        }
+
+
+        /* ── Galería / slider ───────────────────── */
         function seleccionarImagen(indice) {
-            const slider   = document.getElementById('slider-principal');
-            const anchoImg = slider.clientWidth;
-            slider.scrollTo({ left: indice * anchoImg, behavior: 'smooth' });
-
-            /* Resaltar miniatura activa quitando la clase a las demás */
+            const slider = document.getElementById('slider-principal');
+            slider.scrollTo({ left: indice * slider.clientWidth, behavior: 'smooth' });
             document.querySelectorAll('.miniaturas img').forEach((img, i) => {
                 img.classList.toggle('activa', i === indice);
             });
         }
 
 
-        /* =============================================
-           ELEGIR TALLA
-           Marca la talla elegida visualmente y la guarda.
-           Actualiza el link de WhatsApp con la talla.
-           Las tallas agotadas no hacen nada al clicar.
-        ============================================== */
+        /* ── Elegir talla ───────────────────────── */
         function elegirTalla(talla, disponible, btn) {
             if (!disponible) return;
             tallaSeleccionada = talla;
@@ -198,28 +219,18 @@
         }
 
 
-        /* =============================================
-           ACTUALIZAR LINK DE WHATSAPP
-           Arma el mensaje con nombre del producto y talla.
-           Si no hay talla: deja mensaje genérico.
-           Si hay talla: incluye la talla elegida.
-        ============================================== */
+        /* ── Armar link de WhatsApp ─────────────── */
         function actualizarLinkWA() {
-            const nombre = p ? p.nombre : '';
-            const msg    = tallaSeleccionada
-                ? `Hola! Quiero comprar la ${nombre} en talla ${tallaSeleccionada}`
-                : `Hola! Quiero comprar la ${nombre}`;
+            if (!p) return;
+            const tallaStr = tallaSeleccionada ? ` en talla ${tallaSeleccionada}` : '';
+            const cantStr  = cantidadDet > 1   ? `, cantidad: ${cantidadDet}`    : '';
+            const msg = `Hola! Quiero comprar la ${p.nombre}${tallaStr}${cantStr}`;
             document.getElementById('link-whatsapp').href =
                 `https://wa.me/527821702426?text=${encodeURIComponent(msg)}`;
         }
 
 
-        /* =============================================
-           COPIAR LINK DEL PRODUCTO
-           Copia la URL actual al portapapeles.
-           Útil para compartir este producto por WhatsApp/Instagram.
-           Cambia el texto del botón por 2 segundos de confirmación.
-        ============================================== */
+        /* ── Copiar link ────────────────────────── */
         function copiarLink() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 const btn = document.getElementById('btn-copiar');
@@ -229,42 +240,25 @@
         }
 
 
-        /* =============================================
-           MODAL GUÍA DE TALLAS
-           Abre y cierra el modal con la tabla de medidas.
-        ============================================== */
-        function abrirGuiaTallas() {
-            document.getElementById('modal-tallas').style.display = 'flex';
-        }
-        function cerrarGuiaTallas() {
-            document.getElementById('modal-tallas').style.display = 'none';
-        }
-        /* Cerrar con tecla Escape */
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') cerrarGuiaTallas();
-        });
+        /* ── Modal guía de tallas ───────────────── */
+        function abrirGuiaTallas()  { document.getElementById('modal-tallas').style.display = 'flex'; }
+        function cerrarGuiaTallas() { document.getElementById('modal-tallas').style.display = 'none'; }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarGuiaTallas(); });
 
 
-        /* =============================================
-           MOSTRAR PRODUCTOS RELACIONADOS
-           Busca productos de la misma categoría
-           (excluyendo el producto actual).
-           Muestra máximo 3 tarjetas pequeñas.
-        ============================================== */
-        function mostrarRelacionados(categoriaActual, idActual) {
-            const relacionados = productos
-                .filter(prod => prod.categoria === categoriaActual && prod.id !== idActual)
+        /* ── Productos relacionados ─────────────── */
+        function mostrarRelacionados(cat, idActual) {
+            const rel  = productos
+                .filter(pr => pr.categoria === cat && pr.id !== idActual)
                 .slice(0, 3);
-
             const grid = document.getElementById('relacionados-grid');
-
-            if (relacionados.length === 0) {
+            if (rel.length === 0) {
                 document.getElementById('seccion-relacionados').style.display = 'none';
                 return;
             }
-
-            grid.innerHTML = relacionados.map(r => `
-                <div class="relacionado-card" onclick="window.location.href='producto.html?id=${r.id}'">
+            grid.innerHTML = rel.map(r => `
+                <div class="relacionado-card"
+                     onclick="window.location.href='producto.html?id=${r.id}'">
                     <img src="${r.imagen}" alt="${r.nombre}" loading="lazy">
                     <p class="relacionado-nombre">${r.nombre}</p>
                     <p class="relacionado-precio">${r.precio}</p>
@@ -273,67 +267,66 @@
         }
 
 
-        /* =============================================
-           INICIALIZACIÓN
-           Si el producto existe: llenar todos los campos.
-           Si no existe (ID inválido): redirigir al catálogo.
-        ============================================== */
+        /* ── Inicializar la página ──────────────── */
         if (p) {
-            /* Actualizar título de la pestaña y meta OG del producto */
-            document.title = `${p.nombre} | CAPI Print Studio PRO`;
 
-            /* Precio tachado si tiene precioAntes */
+            /* Meta OG dinámicos para preview correcta en WhatsApp */
+            document.title = `${p.nombre} | CAPI Print Studio PRO`;
+            document.querySelector('meta[property="og:title"]')
+                .setAttribute('content', `${p.nombre} | CAPI Print Studio PRO`);
+            document.querySelector('meta[property="og:image"]')
+                .setAttribute('content', p.imagenes[0]);
+            document.querySelector('meta[property="og:description"]')
+                .setAttribute('content', `${p.nombre} — ${p.precio}. Estampado DTF en Poza Rica, Veracruz.`);
+
+            /* Precio tachado */
             if (p.precioAntes) {
-                const elAntes = document.getElementById('det-precio-antes');
-                elAntes.textContent = p.precioAntes;
-                elAntes.style.display = 'block';
+                const el = document.getElementById('det-precio-antes');
+                el.textContent = p.precioAntes;
+                el.style.display = 'block';
             }
 
-            /* Rellenar campos de texto */
-            document.getElementById('det-titulo').innerText     = p.nombre;
-            document.getElementById('det-precio').innerText     = p.precio;
-            document.getElementById('det-composicion').innerText = p.composicion;
-            document.getElementById('det-lavado').innerText     = p.lavado;
+            /* Texto básico */
+            document.getElementById('det-titulo').innerText       = p.nombre;
+            document.getElementById('det-precio').innerText       = p.precio;
+            document.getElementById('det-composicion').innerText  = p.composicion;
+            document.getElementById('det-lavado').innerText       = p.lavado;
             document.getElementById('det-caracteristicas').innerHTML =
                 p.caracteristicas.map(c => `<li>${c}</li>`).join('');
 
-            /* Construir slider principal con todas las imágenes */
-            const slider = document.getElementById('slider-principal');
-            slider.innerHTML = p.imagenes.map(img =>
-                `<img src="${img}" alt="${p.nombre}">`
-            ).join('');
+            /* Slider de imágenes */
+            document.getElementById('slider-principal').innerHTML =
+                p.imagenes.map(img => `<img src="${img}" alt="${p.nombre}">`).join('');
 
-            /* Construir miniaturas clicables */
-            const thumbs = document.getElementById('galeria-thumbs');
-            thumbs.innerHTML = p.imagenes.map((img, i) => `
-                <img src="${img}"
-                     onclick="seleccionarImagen(${i})"
-                     alt="Vista ${i + 1}"
-                     class="${i === 0 ? 'activa' : ''}">
-            `).join('');
+            /* Miniaturas */
+            document.getElementById('galeria-thumbs').innerHTML =
+                p.imagenes.map((img, i) => `
+                    <img src="${img}"
+                         onclick="seleccionarImagen(${i})"
+                         alt="Vista ${i + 1}"
+                         class="${i === 0 ? 'activa' : ''}">`
+                ).join('');
 
-            /* Construir botones de talla */
+            /* Botones de talla */
             if (p.tallas && p.tallas.length > 0) {
-                const grid = document.getElementById('tallas-grid');
-                grid.innerHTML = p.tallas.map(t => {
-                    const disponible = p.tallasDisponibles
+                document.getElementById('tallas-grid').innerHTML = p.tallas.map(t => {
+                    const disp = p.tallasDisponibles
                         ? p.tallasDisponibles.includes(t)
                         : true;
                     return `
-                        <button class="btn-talla ${!disponible ? 'agotada' : ''}"
-                            onclick="elegirTalla('${t}', ${disponible}, this)"
-                            ${!disponible ? 'title="Agotada" disabled' : ''}>
+                        <button class="btn-talla ${!disp ? 'agotada' : ''}"
+                            onclick="elegirTalla('${t}', ${disp}, this)"
+                            ${!disp ? 'disabled title="Agotada"' : ''}>
                             ${t}
-                            ${!disponible ? '<span class="talla-x">✕</span>' : ''}
+                            ${!disp ? '<span class="talla-x">✕</span>' : ''}
                         </button>`;
                 }).join('');
             } else {
-                /* Ocultar sección de tallas si el producto no las tiene */
                 document.getElementById('seccion-tallas').style.display = 'none';
             }
 
-            /* Interceptar clic en WhatsApp: pedir talla si no eligió */
-            document.getElementById('link-whatsapp').addEventListener('click', (e) => {
+            /* Forzar elección de talla antes de abrir WA */
+            document.getElementById('link-whatsapp').addEventListener('click', e => {
                 if (p.tallas && p.tallas.length > 0 && !tallaSeleccionada) {
                     e.preventDefault();
                     document.getElementById('aviso-talla').style.display = 'block';
@@ -341,14 +334,20 @@
                 }
             });
 
-            /* Inicializar link de WhatsApp */
+            /* Link WA inicial */
             actualizarLinkWA();
 
-            /* Mostrar productos relacionados */
+            /* Botón flotante WA con nombre del producto */
+            const waFlotante = document.getElementById('wa-flotante');
+            if (waFlotante) {
+                waFlotante.href = `https://wa.me/527821702426?text=${encodeURIComponent(`Hola! Tengo una duda sobre la ${p.nombre}`)}`;
+            }
+
+            /* Relacionados */
             mostrarRelacionados(p.categoria, p.id);
 
         } else {
-            /* Producto no encontrado → volver al catálogo */
+            /* ID inválido → volver al catálogo */
             window.location.href = 'index.html';
         }
     </script>

@@ -5,57 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAPI Print Studio PRO | Catálogo Profesional</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Fuentes: Bebas Neue para títulos, Barlow para texto general -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- ============================
-         OPEN GRAPH
-         Hace que al compartir el link en WhatsApp/Facebook aparezca
-         una vista previa con imagen, título y descripción.
-         Cambia og:image por la imagen principal de tu catálogo.
-    ============================= -->
     <meta property="og:title" content="CAPI Print Studio PRO">
     <meta property="og:description" content="Playeras premium con estampado DTF en Poza Rica, Veracruz. Anime, JDM, Fútbol, Anti Social Club y personalizadas.">
-    <meta property="og:image" content="img/belicas/assc-corridos-tumbados.webp">
+    <meta property="og:image" content="img/ASSC/assc-corridos-tumbados.webp">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="es_MX">
-
-    <!-- Meta para Google -->
     <meta name="description" content="Playeras premium con estampado DTF en Poza Rica, Veracruz. Entrega local y envíos a toda la república.">
-
-    <!-- Favicon: ícono que aparece en la pestaña del navegador -->
     <link rel="icon" href="img/favicon.ico" type="image/x-icon">
 </head>
 <body>
 
-    <!-- ============================
-         BANNER DE ENVÍOS
-         Barra informativa fija arriba del todo.
-         Genera confianza antes de que el cliente vea productos.
-    ============================= -->
+    <!-- BANNER ENVÍOS -->
     <div class="banner-envios">
         🚚 Entrega en Poza Rica el mismo día &nbsp;&middot;&nbsp;
         📦 Envíos a toda la república &nbsp;&middot;&nbsp;
         💳 Pago al recibir disponible
     </div>
 
-    <!-- ============================
-         HEADER STICKY
-         Se queda fijo al hacer scroll.
-         Contiene: título, buscador, filtros y ordenar.
-    ============================= -->
+    <!-- HEADER STICKY CON GLASSMORPHISM -->
     <header>
-        <h1>CAPI PRINT STUDIO PRO</h1>
-
-        <!-- Buscador dinámico: filtra en tiempo real al escribir -->
-        <div class="search-container">
-            <input type="text" id="buscador" placeholder="Busca tu playera (Supra, Anime, Junior H)...">
+        <div class="header-top">
+            <h1>CAPI PRINT STUDIO PRO</h1>
+            <!-- Botón del carrito -->
+            <button class="btn-carrito" onclick="abrirCarrito()">
+                🛒 <span class="carrito-badge" id="carrito-badge">0</span>
+            </button>
         </div>
 
-        <!-- Fila de controles: filtros de categoría + selector de orden -->
+        <div class="search-container">
+            <input type="text" id="buscador" placeholder="Busca tu playera (Supra, Anime, Junior H)...">
+            <span class="search-icon">🔍</span>
+        </div>
+
         <div class="controles-catalogo">
             <nav>
-                <!-- Llama a filtrar(categoria, botonActual) -->
                 <button class="activo" onclick="filtrar('todos', this)">Todos</button>
                 <button onclick="filtrar('jdm', this)">JDM / Autos</button>
                 <button onclick="filtrar('anime', this)">Anime</button>
@@ -63,8 +48,6 @@
                 <button onclick="filtrar('futbol', this)">Fútbol</button>
                 <button onclick="filtrar('personalizada', this)">Personalizada</button>
             </nav>
-
-            <!-- Ordenar productos: llama a ordenarProductos() al cambiar -->
             <select id="orden" onchange="ordenarProductos(this.value)">
                 <option value="default">Ordenar ↕</option>
                 <option value="precio-asc">Precio: menor a mayor</option>
@@ -75,10 +58,36 @@
     </header>
 
     <!-- ============================
-         CATÁLOGO PRINCIPAL
-         Las tarjetas se inyectan aquí por mostrarProductos() en script.js.
-         Los skeleton-card son placeholders animados mientras carga.
+         HERO SECTION
     ============================= -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <p class="hero-sub">Nueva colección 2026</p>
+            <h2 class="hero-titulo">Cultura JDM &amp; Anime<br><span class="hero-accent">en tu piel</span></h2>
+            <p class="hero-desc">Estampado DTF de alta resolución · Poza Rica, Ver. · Envío inmediato</p>
+            <div class="hero-btns">
+                <button class="btn-hero-primary" onclick="document.getElementById('contenedor-productos').scrollIntoView({behavior:'smooth'})">
+                    Ver Novedades ↓
+                </button>
+                <a href="https://wa.me/527821702426?text=Hola!%20Quiero%20ver%20el%20catálogo" target="_blank" class="btn-hero-wa">
+                    WhatsApp 💬
+                </a>
+            </div>
+        </div>
+        <!-- Cronómetro de urgencia -->
+        <div class="cronometro-wrap">
+            <p class="crono-texto">⚡ Pide antes de las <strong id="hora-corte"></strong> y enviamos HOY</p>
+            <div class="crono-contador">
+                <div class="crono-bloque"><span id="crono-h">00</span><small>hrs</small></div>
+                <div class="crono-sep">:</div>
+                <div class="crono-bloque"><span id="crono-m">00</span><small>min</small></div>
+                <div class="crono-sep">:</div>
+                <div class="crono-bloque"><span id="crono-s">00</span><small>seg</small></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATÁLOGO -->
     <main id="contenedor-productos">
         <div class="skeleton-card"></div>
         <div class="skeleton-card"></div>
@@ -86,11 +95,7 @@
         <div class="skeleton-card"></div>
     </main>
 
-    <!-- ============================
-         SECCIÓN DE CONFIANZA
-         Cuatro puntos clave para convencer al cliente local.
-         Muy importante para ventas en Poza Rica.
-    ============================= -->
+    <!-- SECCIÓN DE CONFIANZA -->
     <section class="seccion-confianza">
         <h2>¿Por qué comprar aquí?</h2>
         <div class="grid-confianza">
@@ -117,11 +122,7 @@
         </div>
     </section>
 
-    <!-- ============================
-         SECCIÓN DE PERSONALIZACIÓN
-         Formulario que arma un mensaje completo para WhatsApp.
-         Cliente escribe nombre, descripción del diseño y talla.
-    ============================= -->
+    <!-- SECCIÓN PERSONALIZADA -->
     <section class="seccion-personalizada">
         <h2>¿Quieres una playera personalizada?</h2>
         <p class="sub-personalizada">Cuéntanos tu idea y te hacemos un diseño único.</p>
@@ -133,8 +134,62 @@
                 <option>S</option><option>M</option><option>L</option>
                 <option>XL</option><option>XXL</option>
             </select>
-            <!-- Al hacer clic llama a pedirPersonalizada() en script.js -->
             <button onclick="pedirPersonalizada()" class="btn-personalizada">Pedir por WhatsApp ✏️</button>
+        </div>
+    </section>
+
+    <!-- ============================
+         FAQ ACORDEÓN
+    ============================= -->
+    <section class="seccion-faq">
+        <h2>Preguntas frecuentes</h2>
+        <div class="faq-lista">
+
+            <div class="faq-item">
+                <button class="faq-pregunta" onclick="toggleFaq(this)">
+                    ¿Cuánto tarda el envío? <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-respuesta">
+                    <p>Entrega local en Poza Rica el mismo día si pides antes del horario de corte. Envíos a la república en 2–4 días hábiles por paquetería.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-pregunta" onclick="toggleFaq(this)">
+                    ¿Cómo es el proceso de pago? <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-respuesta">
+                    <p>Puedes pagar al recibir (zona local), por transferencia SPEI o depósito. Te damos el número de cuenta por WhatsApp al confirmar tu pedido.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-pregunta" onclick="toggleFaq(this)">
+                    ¿El estampado DTF se despega o destiñe? <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-respuesta">
+                    <p>No. El DTF es uno de los métodos más duraderos. Siempre recomendamos lavar al revés con agua fría para maximizar la vida del estampado.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-pregunta" onclick="toggleFaq(this)">
+                    ¿Puedo pedir una playera personalizada? <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-respuesta">
+                    <p>¡Claro! Usa el formulario de abajo o escríbenos directo por WhatsApp. Puedes mandar tu imagen, logo o descripción del diseño y nosotros lo llevamos a la playera.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-pregunta" onclick="toggleFaq(this)">
+                    ¿Hacen pedidos al mayoreo? <span class="faq-icon">+</span>
+                </button>
+                <div class="faq-respuesta">
+                    <p>Sí. Para pedidos de 5 playeras o más aplican precios especiales. Escríbenos para cotizarte sin compromiso.</p>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -143,6 +198,36 @@
         <a href="https://wa.me/527821702426?text=Hola!%20Tengo%20una%20duda%20sobre%20sus%20playeras"
            target="_blank" class="footer-wa">Contáctanos por WhatsApp</a>
     </footer>
+
+    <!-- ============================
+         BOTÓN FLOTANTE WHATSAPP
+    ============================= -->
+    <a href="https://wa.me/527821702426?text=Hola!%20Estoy%20en%20el%20catálogo%20y%20tengo%20una%20duda"
+       target="_blank" class="whatsapp-flotante" id="wa-flotante" title="Chatea por WhatsApp">
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M16 0C7.163 0 0 7.163 0 16c0 2.82.736 5.46 2.027 7.754L0 32l8.478-2.02A15.938 15.938 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm8.28 22.27c-.347.976-1.72 1.787-2.824 2.023-.752.16-1.733.287-5.036-1.082-4.223-1.737-6.944-6.027-7.155-6.308-.202-.28-1.7-2.261-1.7-4.31 0-2.048 1.063-3.052 1.44-3.46.347-.367.757-.46 1.01-.46.252 0 .505.002.726.013.233.012.546-.088.854.65.32.76 1.09 2.626 1.186 2.817.097.19.162.413.032.664-.13.252-.194.41-.384.631-.19.222-.4.495-.572.665-.19.19-.388.397-.167.778.222.38.986 1.622 2.116 2.628 1.454 1.296 2.68 1.697 3.06 1.888.38.19.603.16.824-.096.222-.255.951-1.109 1.205-1.49.253-.38.505-.317.854-.19.35.127 2.222 1.048 2.603 1.238.38.19.633.285.726.443.093.16.093.924-.253 1.9z"/>
+        </svg>
+    </a>
+
+    <!-- ============================
+         PANEL CARRITO LATERAL
+    ============================= -->
+    <div class="carrito-overlay" id="carrito-overlay" onclick="cerrarCarrito()"></div>
+    <aside class="carrito-panel" id="carrito-panel">
+        <div class="carrito-header">
+            <h3>🛒 Tu lista de pedido</h3>
+            <button class="carrito-cerrar" onclick="cerrarCarrito()">✕</button>
+        </div>
+        <div class="carrito-items" id="carrito-items">
+            <p class="carrito-vacio">Aún no has agregado productos.</p>
+        </div>
+        <div class="carrito-footer">
+            <a href="#" id="btn-pedir-todo" class="btn-pedir-todo" target="_blank" onclick="pedirTodo()">
+                Pedir todo por WhatsApp 🚀
+            </a>
+            <button class="btn-vaciar" onclick="vaciarCarrito()">Vaciar lista</button>
+        </div>
+    </aside>
 
     <script src="js/script.js"></script>
 </body>

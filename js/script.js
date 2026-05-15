@@ -1,36 +1,22 @@
 /* ==============================================
-   SCRIPT.JS — CAPI Print Studio PRO
-   Contiene: base de datos de productos,
-   catálogo, buscador, filtros, orden,
-   personalización y productos relacionados.
+   SCRIPT.JS — CAPI Print Studio PRO v2.1
+   CORRECCIÓN: productos[] declarado al tope del
+   archivo, sin ninguna dependencia del DOM en el
+   scope global. Así producto.html puede usar la
+   variable en cuanto el <script> termina de cargar.
    ============================================== */
 
 
 /* =============================================
-   1. BASE DE DATOS DE PRODUCTOS
-   Agrega aquí cada playera que vendas.
-   Estructura de carpetas de imágenes:
-     img/belicas/   → playeras bélicas/urbanas
-     img/jdm/       → autos y JDM
-     img/anime/     → anime
-     img/futbol/    → equipos de fútbol
-     img/personalizadas/ → ejemplos de personalizados
-   
-   Campos de cada producto:
-     id            → número único, nunca repetir
-     nombre        → nombre completo de la playera
-     categoria     → belica | jdm | anime | futbol | personalizada
-     precioNum     → número sin símbolo (para ordenar)
-     precio        → precio con símbolo para mostrar
-     precioAntes   → precio tachado (opcional, omitir si no aplica)
-     imagen        → ruta de imagen principal
-     imagenes      → array de todas las imágenes del producto
-     composicion   → material de la playera
-     caracteristicas → array de puntos clave
-     lavado        → instrucciones de lavado
-     stock         → cantidad disponible (<=3 muestra badge rojo)
-     tallas        → todas las tallas del producto
-     tallasDisponibles → solo las que tienen stock
+   1. BASE DE DATOS DE PRODUCTOS  ← SIEMPRE PRIMERO
+   ─────────────────────────────────────────────
+   Campos de badge (elige uno por producto):
+     badge: 'nuevo'    → morado  "NUEVO"
+     badge: 'best'     → naranja "BEST SELLER"
+     badge: 'premium'  → dorado  "PREMIUM"
+     badge: null       → sin badge extra
+   Si stock <= 3 el badge rojo "Últimas X" se
+   agrega automáticamente, sin importar el campo.
 ============================================== */
 const productos = [
     {
@@ -47,11 +33,16 @@ const productos = [
             "img/ASSC/assc-corridos-tumbados-3.webp"
         ],
         composicion: "100% Algodón Premium",
-        caracteristicas: ["Corte Regular", "Estampado DTF alta resolución", "Cuello redondo reforzado"],
+        caracteristicas: [
+            "Corte Regular",
+            "Estampado DTF alta resolución",
+            "Cuello redondo reforzado"
+        ],
         lavado: "Lavar a mano con agua fría. No usar secadora. Planchar al revés.",
         stock: 5,
         tallas: ["S", "M", "L", "XL", "XXL"],
-        tallasDisponibles: ["M", "L", "XL"]
+        tallasDisponibles: ["M", "L", "XL"],
+        badge: "best"
     },
     {
         id: 2,
@@ -61,16 +52,27 @@ const productos = [
         precio: "$280",
         precioAntes: null,
         imagen: "img/ASSC/assc-Sadboys-Angeles.webp",
-        imagenes: ["img/ASSC/assc-Sadboys-Angeles.webp"],
+        imagenes: [
+            "img/ASSC/assc-Sadboys-Angeles.webp"
+        ],
         composicion: "100% Algodón tacto suave",
-        caracteristicas: ["Diseño exclusivo", "Impresión duradera", "Talla única"],
+        caracteristicas: [
+            "Diseño exclusivo",
+            "Impresión duradera",
+            "Talla única oversize"
+        ],
         lavado: "Lavar con colores similares. Evitar exprimir fuertemente el estampado.",
         stock: 3,
         tallas: ["S", "M", "L", "XL", "XXL"],
-        tallasDisponibles: ["S", "M", "L"]
-    },
-    /* ─── EJEMPLO DE PRODUCTO JDM ──────────────────
-    {
+        tallasDisponibles: ["S", "M", "L"],
+        badge: "nuevo"
+    }
+    /*
+    ── CÓMO AGREGAR MÁS PRODUCTOS ──────────────
+    Agrega una coma después del último producto
+    y copia este bloque:
+
+    ,{
         id: 3,
         nombre: "Playera Toyota Supra MK4",
         categoria: "jdm",
@@ -84,52 +86,67 @@ const productos = [
         lavado: "Lavar a mano con agua fría. Planchar al revés.",
         stock: 8,
         tallas: ["S", "M", "L", "XL", "XXL"],
-        tallasDisponibles: ["S", "M", "L", "XL", "XXL"]
-    },
-    ─────────────────────────────────────────────── */
-    /* ─── EJEMPLO DE PRODUCTO ANIME ────────────────
-    {
-        id: 4,
-        nombre: "Playera Naruto Akatsuki",
-        categoria: "anime",
-        precioNum: 260,
-        precio: "$260",
-        precioAntes: null,
-        imagen: "img/anime/naruto-akatsuki.webp",
-        imagenes: ["img/anime/naruto-akatsuki.webp"],
-        composicion: "100% Algodón",
-        caracteristicas: ["Diseño anime", "Estampado DTF", "Corte Oversize"],
-        lavado: "Lavar a mano. No usar cloro.",
-        stock: 6,
-        tallas: ["S", "M", "L", "XL"],
-        tallasDisponibles: ["M", "L", "XL"]
-    },
-    ─────────────────────────────────────────────── */
+        tallasDisponibles: ["S", "M", "L", "XL", "XXL"],
+        badge: null
+    }
+    ──────────────────────────────────────────── */
 ];
 
 
 /* =============================================
-   2. VARIABLES GLOBALES
-   listaMostrada → guarda la lista actual filtrada/ordenada
-   para que el ordenar no rompa el filtro activo.
+   2. CARRITO — estado global
 ============================================== */
-const contenedor = document.getElementById('contenedor-productos');
-const buscador   = document.getElementById('buscador');
-let listaMostrada = [...productos];
+let carrito = JSON.parse(localStorage.getItem('capi_carrito') || '[]');
 
 
 /* =============================================
-   3. MOSTRAR PRODUCTOS
-   Recibe un array de productos y renderiza las tarjetas.
-   Incluye: badge de urgencia, precio tachado,
-   contador de visitas y botón de WhatsApp.
+   3. UTILIDADES
+============================================== */
+
+/* Quita acentos y pasa a minúsculas */
+function normalizar(texto) {
+    return texto
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+}
+
+/* Persiste el carrito y refresca el badge */
+function guardarCarrito() {
+    localStorage.setItem('capi_carrito', JSON.stringify(carrito));
+    actualizarBadgeCarrito();
+}
+
+/* Badge del botón 🛒 */
+function actualizarBadgeCarrito() {
+    const badge = document.getElementById('carrito-badge');
+    if (!badge) return;
+    const total = carrito.reduce((sum, i) => sum + i.cantidad, 0);
+    badge.textContent = total;
+}
+
+/* Contador de visitas (localStorage, resetea cada 7 días) */
+function registrarVisita(id) {
+    const key   = `visitas_${id}`;
+    const hoy   = Date.now();
+    const datos = JSON.parse(localStorage.getItem(key) || '{"count":0,"desde":0}');
+    if (hoy - datos.desde > 7 * 24 * 60 * 60 * 1000) { datos.count = 0; datos.desde = hoy; }
+    datos.count++;
+    localStorage.setItem(key, JSON.stringify(datos));
+    return datos.count;
+}
+
+
+/* =============================================
+   4. CATÁLOGO — renderizar tarjetas
 ============================================== */
 function mostrarProductos(lista) {
+    const contenedor = document.getElementById('contenedor-productos');
     if (!contenedor) return;
-    listaMostrada = lista;
-    contenedor.innerHTML = '';
 
-    /* Si no hay resultados, mostrar mensaje + link a WhatsApp */
+    window._listaMostrada = lista;
+    contenedor.innerHTML  = '';
+
     if (lista.length === 0) {
         contenedor.innerHTML = `
             <div class="sin-resultados">
@@ -145,42 +162,50 @@ function mostrarProductos(lista) {
     lista.forEach(p => {
         const card = document.createElement('div');
         card.classList.add('producto-card');
-
-        /* Al clic en la tarjeta, ir a página de detalle con el ID del producto */
         card.onclick = () => { window.location.href = `producto.html?id=${p.id}`; };
 
-        /* Badge rojo de urgencia si quedan 3 o menos unidades */
-        const badgeUrgencia = p.stock <= 3
-            ? `<span class="badge-urgente">⚡ Últimas ${p.stock}</span>`
-            : '';
+        /* Badges */
+        const badges = [];
+        if (p.stock <= 3)          badges.push(`<span class="badge badge-urgente">⚡ Últimas ${p.stock}</span>`);
+        if (p.badge === 'nuevo')   badges.push(`<span class="badge badge-nuevo">Nuevo</span>`);
+        if (p.badge === 'best')    badges.push(`<span class="badge badge-best">Best Seller</span>`);
+        if (p.badge === 'premium') badges.push(`<span class="badge badge-premium">★ Premium</span>`);
+        const badgesHTML = badges.length ? `<div class="badges-wrap">${badges.join('')}</div>` : '';
 
-        /* Precio tachado si el producto tiene precioAntes definido */
+        /* Precio tachado */
         const precioHTML = p.precioAntes
             ? `<p class="precio"><span class="precio-antes">${p.precioAntes}</span> ${p.precio}</p>`
             : `<p class="precio">${p.precio}</p>`;
 
-        /* Contador de visitas guardado en localStorage por producto */
-        const visitas = registrarVisita(p.id);
+        /* Visitas */
+        const visitas    = registrarVisita(p.id);
         const visitasHTML = visitas > 5
             ? `<p class="visitas-label">👁 ${visitas} personas lo vieron esta semana</p>`
             : '';
 
-        /* Mensaje para WhatsApp desde la tarjeta (sin talla aún) */
-        const msgWA = encodeURIComponent(`Hola! Me interesa la ${p.nombre}`);
+        const enCarrito = carrito.some(i => i.id === p.id);
+        const msgWA     = encodeURIComponent(`Hola! Me interesa la ${p.nombre}`);
 
         card.innerHTML = `
             <div class="card-imagen-wrap">
-                ${badgeUrgencia}
+                ${badgesHTML}
                 <img src="${p.imagen}" alt="${p.nombre}" loading="lazy">
             </div>
             <h3>${p.nombre}</h3>
             ${precioHTML}
             <p class="stock-label">Disponibles: ${p.stock}</p>
             ${visitasHTML}
-            <a href="https://wa.me/527821702426?text=${msgWA}"
-               class="btn-whatsapp"
-               onclick="event.stopPropagation();"
-               target="_blank">Pedir por WhatsApp</a>
+            <div class="card-actions">
+                <a href="https://wa.me/527821702426?text=${msgWA}"
+                   class="btn-whatsapp"
+                   onclick="event.stopPropagation();"
+                   target="_blank">Pedir por WA</a>
+                <button class="btn-add-carrito ${enCarrito ? 'agregado' : ''}"
+                    title="Agregar a lista de pedido"
+                    onclick="event.stopPropagation(); toggleCarritoProducto(${p.id}, this)">
+                    ${enCarrito ? '✓' : '+'}
+                </button>
+            </div>
         `;
         contenedor.appendChild(card);
     });
@@ -188,60 +213,16 @@ function mostrarProductos(lista) {
 
 
 /* =============================================
-   4. CONTADOR DE VISITAS (localStorage)
-   Guarda cuántas veces se vio cada producto.
-   Devuelve el número de visitas de esa semana.
-   El contador se resetea cada 7 días.
-============================================== */
-function registrarVisita(id) {
-    const key   = `visitas_${id}`;
-    const hoy   = Date.now();
-    const datos = JSON.parse(localStorage.getItem(key) || '{"count":0,"desde":0}');
-
-    /* Si pasaron más de 7 días, reiniciar el contador */
-    if (hoy - datos.desde > 7 * 24 * 60 * 60 * 1000) {
-        datos.count = 0;
-        datos.desde = hoy;
-    }
-    datos.count++;
-    localStorage.setItem(key, JSON.stringify(datos));
-    return datos.count;
-}
-
-
-/* =============================================
-   5. BUSCADOR EN TIEMPO REAL
-   Filtra por nombre mientras el usuario escribe.
-   Quita el botón activo de los filtros al buscar.
-============================================== */
-if (buscador) {
-    buscador.addEventListener('keyup', (e) => {
-        const texto    = e.target.value.toLowerCase().trim();
-        const filtrados = productos.filter(p => p.nombre.toLowerCase().includes(texto));
-        mostrarProductos(filtrados);
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('activo'));
-        /* Resetear el selector de orden */
-        const orden = document.getElementById('orden');
-        if (orden) orden.value = 'default';
-    });
-}
-
-
-/* =============================================
-   6. FILTRADO POR CATEGORÍA
-   Muestra solo los productos de la categoría elegida.
-   Marca el botón seleccionado como "activo".
-   Limpia el buscador al filtrar.
+   5. FILTROS Y ORDEN
 ============================================== */
 function filtrar(cat, btn) {
-    /* Marcar botón activo y desmarcar los demás */
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('activo'));
     if (btn) btn.classList.add('activo');
 
-    /* Limpiar buscador y resetear orden */
+    const buscador = document.getElementById('buscador');
     if (buscador) buscador.value = '';
     const orden = document.getElementById('orden');
-    if (orden) orden.value = 'default';
+    if (orden)   orden.value = 'default';
 
     const filtrados = cat === 'todos'
         ? [...productos]
@@ -250,57 +231,259 @@ function filtrar(cat, btn) {
     mostrarProductos(filtrados);
 }
 
-
-/* =============================================
-   7. ORDENAR PRODUCTOS
-   Ordena la lista ACTUALMENTE visible (no el total).
-   Así respeta el filtro de categoría activo.
-   Opciones: precio asc, precio desc, nombre A-Z.
-============================================== */
 function ordenarProductos(criterio) {
-    /* Clonar la lista actual para no mutar el array original */
-    let lista = [...listaMostrada];
-
+    const base = window._listaMostrada || [...productos];
+    let lista  = [...base];
     if (criterio === 'precio-asc')  lista.sort((a, b) => a.precioNum - b.precioNum);
     if (criterio === 'precio-desc') lista.sort((a, b) => b.precioNum - a.precioNum);
     if (criterio === 'nombre')      lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
-    if (criterio === 'default')     lista = [...listaMostrada];
-
     mostrarProductos(lista);
 }
 
 
 /* =============================================
-   8. SECCIÓN DE PERSONALIZACIÓN
-   Recoge nombre, descripción y talla del formulario.
-   Arma un mensaje completo y abre WhatsApp.
+   6. BUSCADOR FUZZY
+============================================== */
+function initBuscador() {
+    const buscador = document.getElementById('buscador');
+    if (!buscador) return;
+    buscador.addEventListener('keyup', (e) => {
+        const texto     = normalizar(e.target.value.trim());
+        const filtrados = productos.filter(p => normalizar(p.nombre).includes(texto));
+        mostrarProductos(filtrados);
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('activo'));
+        const orden = document.getElementById('orden');
+        if (orden) orden.value = 'default';
+    });
+}
+
+
+/* =============================================
+   7. PERSONALIZACIÓN
 ============================================== */
 function pedirPersonalizada() {
     const nombre = document.getElementById('custom-nombre').value.trim();
     const diseno = document.getElementById('custom-diseno').value.trim();
     const talla  = document.getElementById('custom-talla').value;
-
-    /* Validar que al menos el diseño esté lleno */
-    if (!diseno) {
-        alert('Por favor describe tu diseño antes de continuar.');
-        return;
-    }
-
-    const msg = `Hola! Quiero pedir una playera personalizada.\n`
-              + `Nombre: ${nombre || 'No especificado'}\n`
-              + `Diseño: ${diseno}\n`
-              + `Talla: ${talla || 'No especificada'}`;
-
+    if (!diseno) { alert('Por favor describe tu diseño antes de continuar.'); return; }
+    const msg = `Hola! Quiero pedir una playera personalizada.\nNombre: ${nombre || 'No especificado'}\nDiseño: ${diseno}\nTalla: ${talla || 'No especificada'}`;
     window.open(`https://wa.me/527821702426?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 
 /* =============================================
-   9. CARGA INICIAL
-   Al cargar la página, reemplaza los skeletons
-   con los productos reales después de 300ms.
-   El pequeño delay hace que el skeleton se vea.
+   8. FAQ ACORDEÓN
 ============================================== */
-setTimeout(() => {
-    mostrarProductos(productos);
-}, 300);
+function toggleFaq(btn) {
+    const respuesta   = btn.nextElementSibling;
+    const estaAbierta = btn.classList.contains('abierta');
+
+    document.querySelectorAll('.faq-pregunta').forEach(b => {
+        b.classList.remove('abierta');
+        b.nextElementSibling.classList.remove('abierta');
+    });
+
+    if (!estaAbierta) {
+        btn.classList.add('abierta');
+        respuesta.classList.add('abierta');
+    }
+}
+
+
+/* =============================================
+   9. CARRITO MULTI-PEDIDO
+============================================== */
+function toggleCarritoProducto(id, btn) {
+    const idx = carrito.findIndex(i => i.id === id);
+
+    if (idx !== -1) {
+        carrito.splice(idx, 1);
+        btn.textContent = '+';
+        btn.classList.remove('agregado');
+        guardarCarrito();
+        renderCarrito();
+        return;
+    }
+
+    const p = productos.find(prod => prod.id === id);
+    if (!p) return;
+
+    let tallaElegida = null;
+    if (p.tallasDisponibles && p.tallasDisponibles.length > 0) {
+        tallaElegida = prompt(
+            `¿Qué talla quieres de "${p.nombre}"?\nDisponibles: ${p.tallasDisponibles.join(', ')}`
+        );
+        if (tallaElegida === null) return;
+        tallaElegida = tallaElegida.trim().toUpperCase();
+        const disponiblesUpper = p.tallasDisponibles.map(t => t.toUpperCase());
+        if (!disponiblesUpper.includes(tallaElegida)) {
+            alert(`Talla "${tallaElegida}" no disponible.\nElige entre: ${p.tallasDisponibles.join(', ')}`);
+            return;
+        }
+    }
+
+    carrito.push({
+        id:        p.id,
+        nombre:    p.nombre,
+        precio:    p.precio,
+        precioNum: p.precioNum,
+        imagen:    p.imagen,
+        talla:     tallaElegida,
+        cantidad:  1
+    });
+
+    btn.textContent = '✓';
+    btn.classList.add('agregado');
+    guardarCarrito();
+    renderCarrito();
+    abrirCarrito();
+}
+
+function cambiarCantidad(idx, delta) {
+    carrito[idx].cantidad += delta;
+    if (carrito[idx].cantidad < 1) carrito.splice(idx, 1);
+    guardarCarrito();
+    renderCarrito();
+    mostrarProductos(window._listaMostrada || productos);
+}
+
+function quitarDelCarrito(idx) {
+    carrito.splice(idx, 1);
+    guardarCarrito();
+    renderCarrito();
+    mostrarProductos(window._listaMostrada || productos);
+}
+
+function vaciarCarrito() {
+    if (!confirm('¿Vaciar toda la lista?')) return;
+    carrito = [];
+    guardarCarrito();
+    renderCarrito();
+    mostrarProductos(window._listaMostrada || productos);
+}
+
+function renderCarrito() {
+    const contenedorItems = document.getElementById('carrito-items');
+    if (!contenedorItems) return;
+
+    if (carrito.length === 0) {
+        contenedorItems.innerHTML = '<p class="carrito-vacio">Aún no has agregado productos.</p>';
+        return;
+    }
+
+    contenedorItems.innerHTML = carrito.map((item, idx) => `
+        <div class="carrito-item">
+            <img src="${item.imagen}" alt="${item.nombre}">
+            <div class="carrito-item-info">
+                <p class="carrito-item-nombre">${item.nombre}</p>
+                <p class="carrito-item-precio">${item.precio}</p>
+                ${item.talla ? `<p class="carrito-item-talla">Talla: <strong>${item.talla}</strong></p>` : ''}
+                <div class="carrito-cantidad">
+                    <button onclick="cambiarCantidad(${idx}, -1)">−</button>
+                    <span>${item.cantidad}</span>
+                    <button onclick="cambiarCantidad(${idx}, 1)">+</button>
+                </div>
+            </div>
+            <button class="btn-quitar-item" onclick="quitarDelCarrito(${idx})" title="Quitar">✕</button>
+        </div>
+    `).join('');
+}
+
+function abrirCarrito() {
+    const panel   = document.getElementById('carrito-panel');
+    const overlay = document.getElementById('carrito-overlay');
+    if (panel)   panel.classList.add('abierto');
+    if (overlay) overlay.classList.add('visible');
+    renderCarrito();
+}
+
+function cerrarCarrito() {
+    const panel   = document.getElementById('carrito-panel');
+    const overlay = document.getElementById('carrito-overlay');
+    if (panel)   panel.classList.remove('abierto');
+    if (overlay) overlay.classList.remove('visible');
+}
+
+function pedirTodo() {
+    if (carrito.length === 0) {
+        alert('Tu lista está vacía. Agrega al menos una playera.');
+        return false;
+    }
+    const lineas = carrito.map(i => {
+        const talla = i.talla ? ` | Talla: ${i.talla}` : '';
+        return `• ${i.nombre}${talla} | Cant: ${i.cantidad} | ${i.precio}`;
+    });
+    const total = carrito.reduce((sum, i) => sum + i.precioNum * i.cantidad, 0);
+    const msg   = `Hola! Quiero hacer un pedido:\n\n${lineas.join('\n')}\n\nTotal aprox: $${total} MXN`;
+    window.open(`https://wa.me/527821702426?text=${encodeURIComponent(msg)}`, '_blank');
+    return false;
+}
+
+
+/* =============================================
+   10. CRONÓMETRO DE URGENCIA
+   Cambia HORA_CORTE para ajustar tu horario.
+============================================== */
+function iniciarCronometro() {
+    const horaCorteEl = document.getElementById('hora-corte');
+    const hEl = document.getElementById('crono-h');
+    const mEl = document.getElementById('crono-m');
+    const sEl = document.getElementById('crono-s');
+    if (!horaCorteEl || !hEl) return;
+
+    const HORA_CORTE = 18; /* 6:00 PM */
+    horaCorteEl.textContent = '6:00 PM';
+
+    function tick() {
+        const ahora = new Date();
+        const corte = new Date(ahora);
+        corte.setHours(HORA_CORTE, 0, 0, 0);
+        if (ahora >= corte) corte.setDate(corte.getDate() + 1);
+
+        const diff = corte - ahora;
+        const h    = Math.floor(diff / 3600000);
+        const m    = Math.floor((diff % 3600000) / 60000);
+        const s    = Math.floor((diff % 60000) / 1000);
+
+        hEl.textContent = String(h).padStart(2, '0');
+        mEl.textContent = String(m).padStart(2, '0');
+        sEl.textContent = String(s).padStart(2, '0');
+    }
+    tick();
+    setInterval(tick, 1000);
+}
+
+
+/* =============================================
+   11. ARRANQUE — DOMContentLoaded
+   ─────────────────────────────────────────────
+   Los datos (productos[]) ya están disponibles
+   ANTES de este evento, porque están declarados
+   arriba en el scope global del archivo.
+
+   Este bloque solo inicializa lo que neces9ita
+   el DOM, que en producto.html lo maneja el
+   propio <script> inline de esa página.
+============================================== */
+document.addEventListener('DOMContentLoaded', () => {
+
+    /* Badge del carrito (ambas páginas) */
+    actualizarBadgeCarrito();
+
+    /* ── Solo en index.html ─────────────────── */
+    if (document.getElementById('contenedor-productos')) {
+        setTimeout(() => mostrarProductos(productos), 350);
+        initBuscador();
+        iniciarCronometro();
+
+        /* Link del botón flotante en index */
+        const waFlotante = document.getElementById('wa-flotante');
+        if (waFlotante) {
+            waFlotante.href = `https://wa.me/527821702426?text=${encodeURIComponent('Hola! Estoy en el catálogo y tengo una duda')}`;
+        }
+    }
+
+    /* ── producto.html lo inicializa su propio ── */
+    /* bloque <script> porque necesita leer la    */
+    /* URL antes de tocar el DOM.                 */
+});
